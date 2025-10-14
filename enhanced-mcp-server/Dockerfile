@@ -1,4 +1,4 @@
-FROM python:3.12-bookworm AS builder
+FROM python:3.12-bookworm
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -6,41 +6,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Install uv
-ENV PATH="/root/.local/bin:$PATH"
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
-
 # Set work directory
 WORKDIR /app
 
-# Copy dependency files
-COPY pyproject.toml uv.lock ./
+# Copy all files needed for installation
+COPY pyproject.toml README.md LICENSE ./
 
 # Install dependencies
-RUN uv sync --frozen --no-install-project --no-dev
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -e .
 
-# Production stage
-FROM python:3.12-bookworm AS runtime
-
-# Install runtime dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy virtual environment from builder
-COPY --from=builder /app/.venv /app/.venv
-ENV PATH="/app/.venv/bin:$PATH"
+# Copy application code
+COPY . .
 
 # Create non-root user
 RUN useradd --create-home --shell /bin/bash app \
-    && mkdir -p /app \
     && chown -R app:app /app
-
-# Set work directory
-WORKDIR /app
-
-# Copy application code
-COPY --chown=app:app . .
 
 # Switch to non-root user
 USER app
