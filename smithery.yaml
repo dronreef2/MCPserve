@@ -1,0 +1,15 @@
+startCommand: stdio
+configSchema:
+  type: object
+  properties:
+    jinaApiKey:
+      type: string
+      description: API key for Jina AI (web fetching and search)
+    geminiApiKey:
+      type: string
+      description: API key for Gemini (translation)
+    deeplApiKey:
+      type: string
+      description: API key for DeepL (advanced translation)
+commandFunction: |
+  (config) => `JINA_API_KEY=${config.jinaApiKey} GEMINI_API_KEY=${config.geminiApiKey} DEEPL_API_KEY=${config.deeplApiKey} python main.py`
