@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Shim para ambiente Smithery quando o startup.sh tenta executar 'smithery'.
+# Redireciona para o servidor Python MCP via stdio.
+
+set -euo pipefail
+
+if [[ "${LOG_LEVEL:-}" == "" ]]; then
+  export LOG_LEVEL=INFO
+fi
+
+exec python main.py

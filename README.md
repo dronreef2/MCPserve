@@ -17,6 +17,8 @@ Este é um servidor MCP avançado e robusto que fornece ferramentas de IA para b
 ### Prompts Disponíveis:
 - **optimize_prompt**: Otimiza prompts de usuário com templates detalhados
 
+> Nota: Este servidor é 100% stdio (não abre porta HTTP). Para ambientes de hospedagem que tentam invocar um binário `smithery`, incluímos um script shim `./smithery` que simplesmente inicia `python main.py` garantindo compatibilidade.
+
 ## 🛡️ Recursos de Segurança e Robustez
 
 - ✅ **Validação de entrada**: URLs, consultas e textos são validados
@@ -141,14 +143,19 @@ O servidor gera logs estruturados com níveis apropriados:
 ## 🌐 Publicação / Smithery
 
 ### Verificação local (stdio):
+Se a CLI detectar `smithery.yaml`, basta:
 ```bash
-smithery dev --config smithery.config.js --no-tunnel
+smithery dev --key <dev-key>
+```
+Ou especificando manualmente o comando stdio:
+```bash
+smithery dev --stdio "python main.py" --key <dev-key>
 ```
 
 ### Publicar (após tag semver):
 1. Crie tag: `git tag v0.2.0 && git push --tags`
 2. Aguarde CI verde no GitHub Actions
-3. O Smithery detectará automaticamente a tag e permitirá publicação via painel web
+3. O Smithery detectará automaticamente a tag e permitirá publicação via painel web (runtime Python stdio)
 4. Acesse https://smithery.ai e publique o servidor
 
 ### Checklist antes do Publish:
