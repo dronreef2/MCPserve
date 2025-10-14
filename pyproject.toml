@@ -31,8 +31,9 @@ dependencies = [
 
 [project.optional-dependencies]
 dashboard = ["fastapi", "uvicorn", "jinja2", "psutil"]
+web = ["fastapi", "uvicorn", "jinja2"]
 dev = ["pytest", "pytest-asyncio", "httpx", "ruff"]
-all = ["ai-tools-mcp-server[dashboard,dev]"]
+all = ["ai-tools-mcp-server[dashboard,web,dev]"]
 
 [project.urls]
 Homepage = "https://github.com/dronreef2/MCPserve"

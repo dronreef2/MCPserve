@@ -90,6 +90,22 @@ REDIS_URL=redis://localhost:6379
 python main.py
 ```
 
+### Interface Web (Front-end):
+```bash
+# Opção 1: Script automático (recomendado)
+./run_web.sh
+
+# Opção 2: Comando direto
+python web_app.py
+```
+Acesse: http://localhost:8001
+
+**Recursos da Interface Web:**
+- 🔍 **Buscar Conteúdo**: Interface simples para extrair conteúdo de URLs
+- 🌐 **Pesquisar na Web**: Ferramenta de pesquisa com resultados formatados
+- 📱 **Interface Responsiva**: Funciona em desktop e mobile
+- ⚡ **Execução Direta**: Usa as ferramentas MCP diretamente (sem protocolo stdio)
+
 ### Go:
 ```bash
 go run main.go
