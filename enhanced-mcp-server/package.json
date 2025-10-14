@@ -1,0 +1,14 @@
+{
+  "name": "enhanced-mcp-server",
+  "version": "0.2.0",
+  "description": "Advanced MCP server with AI tools",
+  "type": "module",
+  "main": "index.js",
+  "module": "index.js",
+  "scripts": {
+    "dev": "python -m enhanced_mcp_server.core.server",
+    "start": "python -m enhanced_mcp_server.core.server"
+  },
+  "keywords": ["mcp", "ai", "tools"],
+  "author": "Enhanced MCP Team"
+}

@@ -4,50 +4,8 @@ name: enhanced-mcp-server
 description: Advanced MCP server with AI tools, intelligent caching, and web interface for web content fetching, search, and translation
 author: Enhanced MCP Team
 tags: ["web", "search", "translation", "ai", "tools", "cache"]
-homepage: https://github.com/your-org/enhanced-mcp-server
+homepage: https://github.com/dronreef2/enhanced-mcp-server
 license: MIT
-repository: https://github.com/your-org/enhanced-mcp-server
+repository: https://github.com/dronreef2/enhanced-mcp-server
 
-startCommand:
-  type: stdio
-  configSchema:
-    # JSON Schema defining the configuration options for the MCP.
-    type: object
-    required:
-      - jinaApiKey
-    properties:
-      jinaApiKey:
-        type: string
-        description: Jina API key for web content fetching and search
-      geminiApiKey:
-        type: string
-        description: Google Gemini API key for translations
-      deeplApiKey:
-        type: string
-        description: DeepL API key for advanced translations
-      redisUrl:
-        type: string
-        description: Redis URL for caching (optional)
-      logLevel:
-        type: string
-        enum: ["DEBUG", "INFO", "WARNING", "ERROR"]
-        default: "INFO"
-        description: Logging level
-  commandFunction:
-    # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
-    |-
-    (config) => ({
-      command: 'python',
-      args: ['-m', 'enhanced_mcp_server.main'],
-      env: {
-        JINA_API_KEY: config.jinaApiKey,
-        GEMINI_API_KEY: config.geminiApiKey || '',
-        DEEPL_API_KEY: config.deeplApiKey || '',
-        REDIS_URL: config.redisUrl || '',
-        LOG_LEVEL: config.logLevel || 'INFO',
-        PYTHONIOENCODING: 'utf-8'
-      }
-    })
-  exampleConfig:
-    jinaApiKey: dummy_apikey_12345
-    logLevel: INFO
+runtime: "python"
