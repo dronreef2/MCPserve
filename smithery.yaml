@@ -1,4 +1,6 @@
-startCommand: stdio
+runtime: python
+startCommand:
+  command: stdio
 configSchema:
   type: object
   required:
