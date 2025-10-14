@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  python-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - JINA_API_KEY=${JINA_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - DEEPL_API_KEY=${DEEPL_API_KEY}
+    ports:
+      - "3000:3000"
+
+  go-app:
+    build:
+      context: .
+      dockerfile: Dockerfile-go
+    environment:
+      - JINA_API_KEY=${JINA_API_KEY}
+    ports:
+      - "3001:3000"
