@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, feature/**, feat/** ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install .[dev]
+
+      - name: Lint (ruff)
+        run: |
+          ruff check . || (echo 'Run ruff --fix locally to address issues' && exit 1)
+
+      - name: Run tests
+        env:
+          JINA_API_KEY: dummy_jina_key_12345
+        run: |
+          pytest
+
+      - name: Build package
+        run: |
+          python -m build || echo 'Build optional'
+
+      - name: Validate smithery.yaml exists
+        run: |
+          test -f smithery.yaml

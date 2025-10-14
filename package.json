@@ -2,6 +2,7 @@
   "name": "mcp-server",
   "version": "1.0.0",
   "main": "server.js",
+  "module": "smithery.config.js",
   "type": "module",
   "scripts": {
     "start": "node server.js"
