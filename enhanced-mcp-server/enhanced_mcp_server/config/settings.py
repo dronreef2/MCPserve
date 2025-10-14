@@ -1,8 +1,7 @@
 """Configuração centralizada do Enhanced MCP Server."""
 
-import os
 from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import Field
 from pydantic_settings import BaseSettings
 
 

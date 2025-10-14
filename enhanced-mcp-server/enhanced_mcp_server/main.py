@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Ponto de entrada principal do Enhanced MCP Server."""
 
-import sys
 import argparse
 from enhanced_mcp_server.core.server import main as server_main
 from enhanced_mcp_server.utils.logging import setup_logging

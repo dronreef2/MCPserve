@@ -1,13 +1,10 @@
 """Servidor MCP principal com ferramentas de IA."""
 
-import asyncio
-from typing import Any
 from mcp.server.fastmcp import FastMCP
 from pydantic import Field
 from enhanced_mcp_server.config import settings
 from enhanced_mcp_server.tools import (
-    fetch_content, search_web, translate_with_gemini, translate_with_deepl,
-    ValidationError
+    fetch_content, search_web, translate_with_gemini, translate_with_deepl, ValidationError
 )
 from enhanced_mcp_server.prompts import (
     PROMPT_OPTIMIZATION_TEMPLATE, SIMPLE_OPTIMIZATION_TEMPLATE, TECHNICAL_PROMPT_TEMPLATE
@@ -94,7 +91,7 @@ async def translate_deepl_tool(
                    content_length=len(content),
                    source_lang=source_lang,
                    target_lang=target_lang)
-        result = await translate_deepl(content, source_lang, target_lang)
+        result = await translate_with_deepl(content, source_lang, target_lang)
         logger.info("Tradução com DeepL concluída com sucesso")
         return result
     except ValidationError as e:

@@ -6,7 +6,6 @@ import json
 import sys
 import os
 from asyncio import subprocess
-import time
 
 async def test_mcp_server():
     """Testa o servidor MCP simulando comunicação cliente."""
@@ -135,14 +134,14 @@ async def test_mcp_server():
         try:
             stderr_data = await process.stderr.read()
             print(f"Stderr: {stderr_data.decode()}")
-        except:
+        except Exception:
             pass
     finally:
         # Termina o processo
         try:
             process.terminate()
             await asyncio.wait_for(process.wait(), timeout=5.0)
-        except:
+        except Exception:
             process.kill()
             await process.wait()
 

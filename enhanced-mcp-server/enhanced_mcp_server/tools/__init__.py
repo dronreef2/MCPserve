@@ -1,12 +1,10 @@
 """Ferramentas MCP para busca e tradução."""
 
 import re
-from typing import Optional
 from urllib.parse import urlparse
 import httpx
-from pydantic import Field, BaseModel
 from enhanced_mcp_server.config import settings
-from enhanced_mcp_server.cache import cache, cached
+from enhanced_mcp_server.cache import cached
 from enhanced_mcp_server.utils.logging import get_logger
 
 logger = get_logger(__name__)

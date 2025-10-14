@@ -6,7 +6,6 @@ from datetime import datetime, timedelta
 from typing import Dict, Optional, List
 import json
 from pathlib import Path
-from enhanced_mcp_server.config import settings
 from enhanced_mcp_server.utils.logging import get_logger
 
 logger = get_logger(__name__)

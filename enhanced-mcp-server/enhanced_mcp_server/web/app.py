@@ -1,16 +1,14 @@
 """Aplicação web FastAPI para interface das ferramentas MCP."""
 
-import asyncio
 from typing import Optional
-from fastapi import FastAPI, Request, Form, HTTPException
+from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from enhanced_mcp_server.config import settings
 from enhanced_mcp_server.tools import (
-    fetch_content, search_web, translate_with_gemini, translate_with_deepl,
-    ValidationError
+    fetch_content, search_web, translate_with_gemini, ValidationError
 )
 from enhanced_mcp_server.utils.logging import setup_logging, get_logger
 from enhanced_mcp_server.cache import cache

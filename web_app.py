@@ -6,10 +6,8 @@ Provides a simple web interface to use fetch and search tools.
 
 import os
 import logging
-from typing import Optional
-from fastapi import FastAPI, Request, Form, HTTPException
+from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import uvicorn
 

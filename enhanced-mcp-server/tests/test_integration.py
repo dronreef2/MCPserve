@@ -2,7 +2,7 @@
 
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import patch, AsyncMock
+from unittest.mock import patch
 from enhanced_mcp_server.web.app import app
 from enhanced_mcp_server.config import settings
 
