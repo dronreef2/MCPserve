@@ -7,8 +7,8 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy and install Python dependencies
-COPY pyproject.toml ./
+# Copy project metadata required for installation
+COPY pyproject.toml README.md ./
 RUN pip install --no-cache-dir -e .
 
 # Copy application code
