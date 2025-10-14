@@ -22,8 +22,8 @@ jobs:
         run: |
           pip install --upgrade pip
           # Install main project dependencies if any
-          pip install .[dev] || echo "No dev dependencies in root"
-          # Install enhanced-mcp-server package
+          pip install -e .[dev] || echo "No dev dependencies in root"
+          # Install enhanced-mcp-server package in editable mode
           cd enhanced-mcp-server && pip install -e .[dev]
 
       - name: Lint (ruff)
