@@ -4,6 +4,9 @@
   "main": "server.js",
   "module": "smithery.config.js",
   "type": "module",
+  "smithery": {
+    "startCommand": "stdio"
+  },
   "scripts": {
     "start": "node server.js"
   },

@@ -47,7 +47,7 @@ pip install -e .[dashboard]
 ### Via Smithery (Claude Desktop / clientes MCP):
 Instalação automática:
 ```bash
-npx -y @smithery/cli install dronreef2/ai-tools-mcp-server --client claude
+npx -y @smithery/cli install @dronreef2/mcpserve --client claude
 ```
 
 Inicialização local para desenvolvimento com túnel:
