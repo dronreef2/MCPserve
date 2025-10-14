@@ -7,10 +7,8 @@ import os
 import time
 import psutil
 from datetime import datetime, timedelta
-from typing import Dict, List, Any
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import uvicorn
 

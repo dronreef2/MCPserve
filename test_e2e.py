@@ -10,7 +10,6 @@ import time
 import subprocess
 import requests
 import pytest
-from typing import Dict, Any
 
 # Add current directory to path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -44,7 +43,7 @@ class TestMCPIntegration:
             response = requests.get('http://localhost:8000/health', timeout=5)
             if response.status_code != 200:
                 pytest.skip("Server health check failed")
-        except:
+        except Exception:
             pytest.skip("Server not responding")
 
     @classmethod

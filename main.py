@@ -1,6 +1,5 @@
 import os
 import logging
-import time
 import re
 from typing import Optional
 import requests
@@ -101,7 +100,7 @@ async def fetch(url: str) -> str:
         return "Error: Connection failed. Please check the URL and try again"
     except Exception as e:
         logger.error(f"Unexpected error fetching {url}: {str(e)}")
-        return f"Error: An unexpected error occurred while fetching the content"
+        return "Error: An unexpected error occurred while fetching the content"
 
 @app.tool()
 @cache.cached(ttl=600)  # Cache for 10 minutes
@@ -188,7 +187,7 @@ async def translate(text: str, from_lang: str = "zh", to_lang: str = "en") -> st
             return result
         except Exception as api_error:
             logger.error(f"Gemini API error: {str(api_error)}")
-            return f"Error: Translation service temporarily unavailable. Please try again later"
+            return "Error: Translation service temporarily unavailable. Please try again later"
 
     except Exception as e:
         logger.error(f"Unexpected error in translate: {str(e)}")

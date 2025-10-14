@@ -20,9 +20,10 @@
    ```
 4. Aguardar CI verde no GitHub Actions
 5. Publicar no Smithery:
-   ```bash
-   smithery publish --url https://raw.githubusercontent.com/dronreef2/MCPserve/main/smithery.yaml
-   ```
+   - Acesse https://smithery.ai
+   - Faça login com sua conta GitHub
+   - O Smithery detectará automaticamente o repositório e a tag
+   - Clique em "Publish" no painel
 6. (Opcional) Publicar no PyPI:
    ```bash
    python -m build

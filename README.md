@@ -147,8 +147,9 @@ smithery dev --config smithery.config.js --no-tunnel
 
 ### Publicar (após tag semver):
 1. Crie tag: `git tag v0.2.0 && git push --tags`
-2. Execute: `smithery publish --url https://raw.githubusercontent.com/dronreef2/MCPserve/main/smithery.yaml`
-3. Confirme no painel Smithery.
+2. Aguarde CI verde no GitHub Actions
+3. O Smithery detectará automaticamente a tag e permitirá publicação via painel web
+4. Acesse https://smithery.ai e publique o servidor
 
 ### Checklist antes do Publish:
 - [x] pyproject com metadados

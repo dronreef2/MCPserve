@@ -1,7 +1,6 @@
 import os
 import logging
 from openai import OpenAI, OpenAIError
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
