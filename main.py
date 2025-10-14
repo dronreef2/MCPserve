@@ -33,9 +33,9 @@ JINA_API_KEY = os.getenv("JINA_API_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 DEEPL_API_KEY = os.getenv("DEEPL_API_KEY")
 
-if not JINA_API_KEY:
-    logger.error("JINA_API_KEY environment variable is required")
-    exit(1)
+# Não encerrar o processo imediatamente para permitir que scanners/platforms
+# executem o binário e detectem capacidades antes de injetar segredos. A validação
+# ocorre no início de main().
 
 # Create server instance
 server = Server("ai-tools")
@@ -127,6 +127,8 @@ async def handle_call_tool(name: str, arguments: Dict[str, Any]) -> List[TextCon
         url = arguments.get("url")
         if not url:
             return [TextContent(type="text", text="Error: URL is required")]
+        if not JINA_API_KEY:
+            return [TextContent(type="text", text="Error: JINA_API_KEY not configured on server")]
             
         try:
             # Validate URL
@@ -159,6 +161,8 @@ async def handle_call_tool(name: str, arguments: Dict[str, Any]) -> List[TextCon
         query = arguments.get("query")
         if not query:
             return [TextContent(type="text", text="Error: Query is required")]
+        if not JINA_API_KEY:
+            return [TextContent(type="text", text="Error: JINA_API_KEY not configured on server")]
             
         try:
             # Use Jina Search API
@@ -313,6 +317,8 @@ Please provide a detailed response with specific examples and clear explanations
 async def main():
     """Main entry point"""
     logger.info("Starting AI Tools MCP Server...")
+    if not JINA_API_KEY:
+        logger.warning("JINA_API_KEY not set at startup; fetch/search tools will return an error until configured.")
     logger.info("Available tools: fetch, search, translate, translate_deepl")
     logger.info("Available prompts: optimize_prompt")
     logger.info(f"JINA_API_KEY configured: {'Yes' if JINA_API_KEY else 'No'}")
