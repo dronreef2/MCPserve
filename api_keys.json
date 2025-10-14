@@ -43,5 +43,30 @@
     "created": 1760459296.0078936,
     "last_used": 1760459296.008247,
     "permissions": []
+  },
+  "YutnY2_FXyrXJ3yypWzXChBiuhumwCzCLeTcY5MkyHc": {
+    "user": "test_user_1760461196",
+    "role": "user",
+    "created": 1760461196.7397528,
+    "last_used": 1760461196.7401981,
+    "permissions": [
+      "read"
+    ]
+  },
+  "rpZe0T4dfx11HQBUwmNQV0ixTXhBcL-gYoULA4PhvtA": {
+    "user": "perm_test",
+    "role": "user",
+    "created": 1760461196.7417848,
+    "last_used": 1760461196.742052,
+    "permissions": [
+      "read"
+    ]
+  },
+  "xPYFwLjR21g-bPot2UM8c5DoBA5OWXMWbDJMsZns1g0": {
+    "user": "admin_test",
+    "role": "admin",
+    "created": 1760461196.7423944,
+    "last_used": 1760461196.7427382,
+    "permissions": []
   }
 }

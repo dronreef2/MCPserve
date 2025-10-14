@@ -7,8 +7,7 @@ Provides web fetching, search, and translation tools via Jina AI, Gemini, and De
 import os
 import logging
 import asyncio
-import json
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 from urllib.parse import urlparse
 import requests
 
@@ -17,11 +16,6 @@ from mcp.server.stdio import stdio_server
 from mcp.types import (
     Tool,
     TextContent,
-    CallToolRequest,
-    CallToolResult,
-    ListToolsRequest,
-    GetPromptRequest,
-    ListPromptsRequest,
     Prompt,
     PromptMessage,
     PromptArgument
