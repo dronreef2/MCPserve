@@ -22,4 +22,4 @@ configSchema:
       type: string
       description: Log level (INFO, DEBUG)
 commandFunction: |
-  (config) => `JINA_API_KEY=${config.jinaApiKey} GEMINI_API_KEY=${config.geminiApiKey||''} DEEPL_API_KEY=${config.deeplApiKey||''} REDIS_URL=${config.redisUrl||''} LOG_LEVEL=${config.logLevel||'INFO'} python main.py`
+  (config) => `JINA_API_KEY=${config.jinaApiKey} GEMINI_API_KEY=${config.geminiApiKey||''} DEEPL_API_KEY=${config.deeplApiKey||''} REDIS_URL=${config.redisUrl||''} LOG_LEVEL=${config.logLevel||'INFO'} PYTHONUNBUFFERED=1 PYTHONIOENCODING=utf-8 python main.py`
