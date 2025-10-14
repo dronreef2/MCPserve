@@ -7,5 +7,3 @@ tags: ["web", "search", "translation", "ai", "tools", "cache"]
 homepage: https://github.com/dronreef2/enhanced-mcp-server
 license: MIT
 repository: https://github.com/dronreef2/enhanced-mcp-server
-
-runtime: "python"
