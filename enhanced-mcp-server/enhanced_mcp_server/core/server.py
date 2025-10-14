@@ -1,32 +1,5 @@
 """Servidor MCP principal com ferramentas de IA."""
 
-from mcp.server.fastmcp import FastMCP
-from pydantic import Field, BaseModel
-from smithery.decorators import smithery
-from enhanced_mcp_server.config import settings
-from enhanced_mcp_server.tools import (
-    fetch_content, search_web, translate_with_gemini, translate_with_deepl, ValidationError
-)
-from enhanced_mcp_server.prompts import (
-    PROMPT_OPTIMIZATION_TEMPLATE, SIMPLE_OPTIMIZATION_TEMPLATE, TECHNICAL_PROMPT_TEMPLATE
-)
-from enhanced_mcp_server.utils.logging import setup_logging, get_logger
-
-# Configura logging
-setup_logging()
-logger = get_logger(__name__)
-
-
-class ConfigSchema(BaseModel):
-    jina_api_key: str = Field(description="Jina API key for web content fetching and search")
-    gemini_api_key: str = Field(default="", description="Google Gemini API key for translations")
-    deepl_api_key: str = Field(default="", description="DeepL API key for advanced translations")
-    redis_url: str = Field(default="", description="Redis URL for caching (optional)")
-    log_level: str = Field(default="INFO", description="Logging level")
-
-
-"""Servidor MCP principal com ferramentas de IA."""
-
 from mcp.server.fastmcp import FastMCP, Context
 from pydantic import Field, BaseModel
 from smithery.decorators import smithery
