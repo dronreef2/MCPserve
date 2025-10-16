@@ -15,4 +15,4 @@ def create_server():
     async def ping() -> str:
         return "pong"
 
-    return mcp.app  # Retorna o app FastAPI configurado para HTTP
+    return mcp.streamable_http_app()  # Chama o método para obter o app FastAPI
