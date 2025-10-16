@@ -109,38 +109,6 @@ async def search_web(query: str) -> str:
         raise ValidationError(f"Erro na pesquisa: {str(e)}")
 
 
-async def translate_with_gemini(content: str) -> str:
-    """Traduz texto usando Gemini."""
-    if not settings.gemini_api_key:
-        raise ValidationError("GEMINI_API_KEY não configurada")
-
-    if not content or len(content.strip()) < 1:
-        raise ValidationError("Conteúdo para tradução não pode estar vazio")
-
-    try:
-        from openai import OpenAI
-
-        client = OpenAI(
-            api_key=settings.gemini_api_key,
-            base_url="https://gemini2gpt.programnotes.cn/v1"
-        )
-
-        response = client.chat.completions.create(
-            model="gemini-2.0-flash",
-            messages=[
-                {"role": "system", "content": "Você é um tradutor profissional. Traduza o texto fornecido entre português e inglês, detectando automaticamente os idiomas de origem e destino."},
-                {"role": "user", "content": content},
-            ],
-            max_tokens=100000,
-            temperature=0.3,
-            timeout=settings.translation_timeout,
-        )
-
-        return response.choices[0].message.content.strip()
-    except Exception as e:
-        logger.error(f"Erro na tradução com Gemini: {e}")
-        raise ValidationError(f"Erro na tradução: {str(e)}")
-
 
 async def translate_with_deepl(content: str, source_lang: str, target_lang: str) -> str:
     """Traduz texto usando DeepL."""

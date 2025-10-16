@@ -5,7 +5,7 @@ from pydantic import Field, BaseModel
 from smithery.decorators import smithery
 from enhanced_mcp_server.config import settings
 from enhanced_mcp_server.tools import (
-    fetch_content, search_web, translate_with_gemini, translate_with_deepl, ValidationError
+    fetch_content, search_web, translate_with_deepl, ValidationError
 )
 from enhanced_mcp_server.prompts import (
     PROMPT_OPTIMIZATION_TEMPLATE, SIMPLE_OPTIMIZATION_TEMPLATE, TECHNICAL_PROMPT_TEMPLATE
@@ -19,7 +19,6 @@ logger = get_logger(__name__)
 
 class ConfigSchema(BaseModel):
     jina_api_key: str = Field(description="Jina API key for web content fetching and search")
-    gemini_api_key: str = Field(default="", description="Google Gemini API key for translations")
     deepl_api_key: str = Field(default="", description="DeepL API key for advanced translations")
     redis_url: str = Field(default="", description="Redis URL for caching (optional)")
     log_level: str = Field(default="INFO", description="Logging level")
@@ -80,29 +79,6 @@ def create_server():
         except Exception as e:
             error_msg = f"Erro interno: {str(e)}"
             logger.error("Erro interno na pesquisa", query=query, error=error_msg, exc_info=True)
-            return error_msg
-
-    @mcp.tool(name="translate", description="Tradução automática entre português e inglês usando Gemini AI")
-    async def translate(ctx: Context, content: str = Field(description="Texto para traduzir")) -> str:
-        """Traduz texto usando Gemini."""
-        try:
-            logger.info("Iniciando tradução com Gemini", content_length=len(content))
-            # Set environment variables from session config
-            import os
-            session_config = ctx.session_config
-            if session_config.gemini_api_key:
-                os.environ['GEMINI_API_KEY'] = session_config.gemini_api_key
-
-            result = await translate_with_gemini(content)
-            logger.info("Tradução com Gemini concluída com sucesso")
-            return result
-        except ValidationError as e:
-            error_msg = f"Erro de validação: {str(e)}"
-            logger.warning("Erro de validação na tradução", error=error_msg)
-            return error_msg
-        except Exception as e:
-            error_msg = f"Erro interno: {str(e)}"
-            logger.error("Erro interno na tradução", error=error_msg, exc_info=True)
             return error_msg
 
     @mcp.tool(name="translate_deepl", description="Tradução avançada entre múltiplos idiomas usando DeepL API")
@@ -225,23 +201,6 @@ def main():
             except Exception as e:
                 error_msg = f"Erro interno: {str(e)}"
                 logger.error("Erro interno na pesquisa", query=query, error=error_msg, exc_info=True)
-                return error_msg
-
-        @mcp.tool(name="translate", description="Tradução automática entre português e inglês usando Gemini AI")
-        async def translate(content: str = Field(description="Texto para traduzir")) -> str:
-            """Traduz texto usando Gemini."""
-            try:
-                logger.info("Iniciando tradução com Gemini", content_length=len(content))
-                result = await translate_with_gemini(content)
-                logger.info("Tradução com Gemini concluída com sucesso")
-                return result
-            except ValidationError as e:
-                error_msg = f"Erro de validação: {str(e)}"
-                logger.warning("Erro de validação na tradução", error=error_msg)
-                return error_msg
-            except Exception as e:
-                error_msg = f"Erro interno: {str(e)}"
-                logger.error("Erro interno na tradução", error=error_msg, exc_info=True)
                 return error_msg
 
         @mcp.tool(name="translate_deepl", description="Tradução avançada entre múltiplos idiomas usando DeepL API")

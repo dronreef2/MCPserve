@@ -20,9 +20,6 @@ configSchema:
     jinaApiKey:
       type: string
       description: API key for Jina AI (web fetching and search)
-    geminiApiKey:
-      type: string
-      description: API key for Gemini (translation) (optional)
     deeplApiKey:
       type: string
       description: API key for DeepL (advanced translation) (optional)
@@ -33,6 +30,6 @@ configSchema:
       type: string
       description: Log level (INFO, DEBUG)
 commandFunction: |
-  (config) => `JINA_API_KEY=${config.jinaApiKey} GEMINI_API_KEY=${config.geminiApiKey||''} DEEPL_API_KEY=${config.deeplApiKey||''} REDIS_URL=${config.redisUrl||''} LOG_LEVEL=${config.logLevel||'INFO'} PYTHONUNBUFFERED=1 PYTHONIOENCODING=utf-8 python -m enhanced_mcp_server.core.server`
+  (config) => `JINA_API_KEY=${config.jinaApiKey} DEEPL_API_KEY=${config.deeplApiKey||''} REDIS_URL=${config.redisUrl||''} LOG_LEVEL=${config.logLevel||'INFO'} PYTHONUNBUFFERED=1 PYTHONIOENCODING=utf-8 python -m enhanced_mcp_server.core.server`
 testConfig:
   jinaApiKey: "test_key_placeholder"

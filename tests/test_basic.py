@@ -3,7 +3,7 @@
 import pytest
 from unittest.mock import patch, AsyncMock
 from enhanced_mcp_server.tools import (
-    fetch_content, search_web, translate_with_gemini, translate_with_deepl,
+    fetch_content, search_web, translate_with_deepl,
     ValidationError, validate_url, validate_language_code
 )
 from enhanced_mcp_server.cache import cache
@@ -90,13 +90,6 @@ class TestTools:
         with patch.object(settings, 'jina_api_key', 'test_key'):
             with pytest.raises(ValidationError, match="Consulta deve ter pelo menos 3 caracteres"):
                 await search_web("")
-
-    @pytest.mark.skip(reason="Teste faz chamada real da API Gemini")
-    @pytest.mark.asyncio
-    async def test_translate_gemini_no_api_key(self):
-        """Testa tradução Gemini sem chave API."""
-        with pytest.raises(ValidationError, match="GEMINI_API_KEY não configurada"):
-            await translate_with_gemini("Hello world")
 
     @pytest.mark.asyncio
     async def test_translate_deepl_invalid_lang(self):

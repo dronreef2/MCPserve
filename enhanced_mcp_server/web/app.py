@@ -8,7 +8,7 @@ from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from enhanced_mcp_server.config import settings
 from enhanced_mcp_server.tools import (
-    fetch_content, search_web, translate_with_gemini, ValidationError
+    fetch_content, search_web, ValidationError
 )
 from enhanced_mcp_server.utils.logging import setup_logging, get_logger
 from enhanced_mcp_server.cache import cache
@@ -120,27 +120,6 @@ async def search_endpoint(query: str = Form(...)):
         return {"success": False, "result": f"Erro de validação: {str(e)}"}
     except Exception as e:
         logger.error("Erro interno na pesquisa", query=query, error=str(e), exc_info=True)
-        return {"success": False, "result": f"Erro interno: {str(e)}"}
-
-
-@app.get("/translate", response_class=HTMLResponse)
-async def translate_page(request: Request):
-    """Página de tradução."""
-    return templates.TemplateResponse("translate.html", {"request": request})
-
-
-@app.post("/translate")
-async def translate_endpoint(content: str = Form(...)):
-    """Endpoint para tradução com Gemini."""
-    try:
-        logger.info("Requisição de tradução Gemini", content_length=len(content))
-        result = await translate_with_gemini(content)
-        return {"success": True, "result": result}
-    except ValidationError as e:
-        logger.warning("Erro de validação na tradução", error=str(e))
-        return {"success": False, "result": f"Erro de validação: {str(e)}"}
-    except Exception as e:
-        logger.error("Erro interno na tradução", error=str(e), exc_info=True)
         return {"success": False, "result": f"Erro interno: {str(e)}"}
 
 
