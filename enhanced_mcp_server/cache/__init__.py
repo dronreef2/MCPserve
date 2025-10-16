@@ -13,26 +13,38 @@ logger = get_logger(__name__)
 
 
 class Cache:
-    """Sistema de cache inteligente com Redis e fallback para memória."""
+    """Sistema de cache inteligente com Redis (conexão preguiçosa) e fallback para memória."""
 
     def __init__(self):
-        self._redis_client = None
+        self._redis_client: Optional[redis.Redis] = None
+        self._redis_checked = False  # Flag para verificar a conexão apenas uma vez
         self._memory_cache: Dict[str, Dict[str, Any]] = {}
         self._lock = threading.Lock()
-        self._init_redis()
+
+    def get_redis_client(self) -> Optional[redis.Redis]:
+        """
+        Retorna o cliente Redis, inicializando a conexão na primeira chamada.
+        Isso é chamado de "lazy connection".
+        """
+        with self._lock:
+            if not self._redis_checked:
+                self._redis_checked = True
+                if settings.redis_url:
+                    try:
+                        client = redis.from_url(settings.redis_url, socket_connect_timeout=2)
+                        client.ping()
+                        self._redis_client = client
+                        logger.info("Redis cache connected successfully.")
+                    except (redis.exceptions.ConnectionError, redis.exceptions.TimeoutError) as e:
+                        logger.warning(f"Failed to connect to Redis: {e}. Using memory cache.")
+                        self._redis_client = None
+                else:
+                    logger.info("Redis not configured. Using memory cache.")
+        return self._redis_client
 
     def _init_redis(self) -> None:
-        """Inicializa conexão com Redis."""
-        if settings.redis_url:
-            try:
-                self._redis_client = redis.from_url(settings.redis_url)
-                self._redis_client.ping()
-                logger.info("Redis cache initialized successfully")
-            except Exception as e:
-                logger.warning(f"Failed to connect to Redis: {e}. Using memory cache.")
-                self._redis_client = None
-        else:
-            logger.info("Redis not configured. Using memory cache.")
+        """Método legado - agora usa get_redis_client()."""
+        self.get_redis_client()
 
     def _get_cache_key(self, func_name: str, args: tuple, kwargs: dict) -> str:
         """Gera chave de cache baseada na função e argumentos."""
@@ -44,15 +56,16 @@ class Cache:
     def get(self, key: str) -> Optional[Any]:
         """Recupera valor do cache."""
         try:
-            if self._redis_client:
-                data = self._redis_client.get(key)
+            redis_client = self.get_redis_client()
+            if redis_client:
+                data = redis_client.get(key)
                 if data:
                     cached_data = json.loads(data)
                     if time.time() < cached_data["expires_at"]:
                         logger.debug(f"Cache hit for key: {key}")
                         return cached_data["value"]
                     else:
-                        self._redis_client.delete(key)
+                        redis_client.delete(key)
             else:
                 with self._lock:
                     if key in self._memory_cache:
@@ -81,8 +94,9 @@ class Cache:
         }
 
         try:
-            if self._redis_client:
-                self._redis_client.setex(key, ttl, json.dumps(cached_data))
+            redis_client = self.get_redis_client()
+            if redis_client:
+                redis_client.setex(key, ttl, json.dumps(cached_data))
                 logger.debug(f"Stored in Redis cache: {key}")
             else:
                 with self._lock:
@@ -94,8 +108,9 @@ class Cache:
     def delete(self, key: str) -> None:
         """Remove valor do cache."""
         try:
-            if self._redis_client:
-                self._redis_client.delete(key)
+            redis_client = self.get_redis_client()
+            if redis_client:
+                redis_client.delete(key)
             else:
                 with self._lock:
                     self._memory_cache.pop(key, None)
@@ -106,8 +121,9 @@ class Cache:
     def clear(self) -> None:
         """Limpa todo o cache."""
         try:
-            if self._redis_client:
-                self._redis_client.flushdb()
+            redis_client = self.get_redis_client()
+            if redis_client:
+                redis_client.flushdb()
             else:
                 with self._lock:
                     self._memory_cache.clear()
