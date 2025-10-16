@@ -50,7 +50,7 @@ pip install -e .[web,cache]
 
 ### Via Smithery (Claude Desktop / clientes MCP)
 ```bash
-npx -y @smithery/cli install @your-org/enhanced-mcp-server --client claude
+npx -y @smithery/cli install @your-org/enhanced-mcp-server
 ```
 
 ## ⚙️ Configuração
@@ -245,7 +245,7 @@ MIT License - veja [LICENSE](LICENSE) para detalhes.
 ## 🙏 Agradecimentos
 
 - [yiGmMk/mcp-server](https://github.com/yiGmMk/mcp-server) - Inspiração inicial
-- [dronreef2/MCPserve](https://github.com/dronreef2/MCPserve) - Base do projeto
+- [dronreef2/MCPserve](https://github.com/dronreef2/Mcpserve) - Base do projeto
 - [Model Context Protocol](https://modelcontextprotocol.io/) - Protocolo MCP
 - [Smithery](https://smithery.ai) - Plataforma de publicação
 
