@@ -1,2 +1,3 @@
-# smithery.yaml (usando pyproject.toml [tool.smithery] para HTTP)
+# smithery.yaml (HTTP server com runtime python)
 name: enhanced-mcp-server
+runtime: python
