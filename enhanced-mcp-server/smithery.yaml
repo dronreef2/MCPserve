@@ -4,9 +4,9 @@ name: enhanced-mcp-server
 description: Advanced MCP server with AI tools, intelligent caching, and web interface for web content fetching, search, and translation
 author: Enhanced MCP Team
 tags: ["web", "search", "translation", "ai", "tools", "cache"]
-homepage: https://github.com/dronreef2/enhanced-mcp-server
+homepage: https://github.com/dronreef2/MCPserve/tree/main/enhanced-mcp-server
 license: MIT
-repository: https://github.com/dronreef2/enhanced-mcp-server
+repository: https://github.com/dronreef2/MCPserve/tree/main/enhanced-mcp-server
 
 # Runtime configuration
 runtime: python

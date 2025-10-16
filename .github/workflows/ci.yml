@@ -21,8 +21,8 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          # Install main project dependencies if any
-          pip install -e .[dev] || echo "No dev dependencies in root"
+          # Install main project dependencies if any (without dev dependencies to avoid conflicts)
+          pip install -e . || echo "No main project dependencies"
           # Install enhanced-mcp-server package in editable mode
           cd enhanced-mcp-server && pip install -e .[dev]
 
