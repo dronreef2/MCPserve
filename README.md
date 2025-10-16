@@ -3,6 +3,7 @@
 [![Smithery Deploy](https://img.shields.io/badge/Smithery-Publish-blue?logo=vercel)](https://smithery.ai)
 [![PyPI version](https://img.shields.io/pypi/v/enhanced-mcp-server.svg)](https://pypi.org/project/enhanced-mcp-server/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![smithery badge](https://smithery.ai/badge/@your-username/enhanced-mcp-server)](https://smithery.ai/server/@your-username/enhanced-mcp-server)
 
 Servidor MCP (Model Context Protocol) avançado e robusto que fornece ferramentas de IA para busca na web, tradução e otimização de prompts. Implementa as melhores práticas de desenvolvimento com validação de entrada, tratamento de erros abrangente, logging estruturado, cache inteligente e segurança aprimorada.
 
@@ -50,7 +51,7 @@ pip install -e .[web,cache]
 
 ### Via Smithery (Claude Desktop / clientes MCP)
 ```bash
-npx -y @smithery/cli install @your-org/enhanced-mcp-server --client claude
+npx -y @smithery/cli install @your-username/enhanced-mcp-server
 ```
 
 ## ⚙️ Configuração
