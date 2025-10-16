@@ -1,32 +1,28 @@
+# /Dockerfile (versão corrigida)
+
 FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
+# Instala dependências do sistema
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
-    python3-dev \
-    libffi-dev \
-    libssl-dev \
-    git \
     && rm -rf /var/lib/apt/lists/*
 
-# Ensure wheel-building tooling is available
+# Instala ferramentas de build do Python
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
-# Copy project metadata required for installation
+# Copia os arquivos de configuração e instala o pacote em modo editável
+# Isso permite que o `python -m` funcione corretamente
 COPY pyproject.toml README.md ./
 RUN pip install --no-cache-dir -e .
 
-# Copy application code
-COPY . .
+# Copia o resto do código da aplicação
+COPY enhanced_mcp_server ./enhanced_mcp_server
 
-# Copy and install smithery shim to PATH
-COPY smithery /usr/local/bin/smithery
-RUN chmod +x /usr/local/bin/smithery
+# Expõe a porta que o servidor HTTP vai usar
+# A Smithery vai mapear uma porta externa para esta
+EXPOSE 8001
 
-# Expose port (if needed)
-EXPOSE 3000
-
-# Run the application - prefer direct Python invocation
-CMD ["python", "main.py"]
+# Comando para iniciar o servidor. Use `python -m` para executar o pacote.
+CMD ["python", "-m", "enhanced_mcp_server.main"]

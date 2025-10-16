@@ -35,7 +35,6 @@ def main():
     if args.check_config:
         print("🔍 Verificando configuração...")
         print(f"  JINA_API_KEY: {'✅ Configurada' if settings.jina_api_key else '❌ Não configurada'}")
-        print(f"  GEMINI_API_KEY: {'✅ Configurada' if settings.gemini_api_key else '❌ Não configurada'}")
         print(f"  DEEPL_API_KEY: {'✅ Configurada' if settings.deepl_api_key else '❌ Não configurada'}")
         print(f"  REDIS_URL: {'✅ Configurada' if settings.redis_url else '⚠️  Usando cache em memória'}")
         print(f"  Log Level: {settings.log_level}")

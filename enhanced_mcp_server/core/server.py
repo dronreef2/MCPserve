@@ -161,7 +161,6 @@ def main():
         logger.info("Iniciando Enhanced MCP Server",
                    version="0.2.0",
                    jina_configured=bool(settings.jina_api_key),
-                   gemini_configured=bool(settings.gemini_api_key),
                    deepl_configured=bool(settings.deepl_api_key),
                    redis_configured=bool(settings.redis_url))
 

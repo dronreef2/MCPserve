@@ -10,7 +10,6 @@ class Settings(BaseSettings):
 
     # API Keys
     jina_api_key: Optional[str] = Field(default=None, env="JINA_API_KEY")
-    gemini_api_key: Optional[str] = Field(default=None, env="GEMINI_API_KEY")
     deepl_api_key: Optional[str] = Field(default=None, env="DEEPL_API_KEY")
 
     # Cache
