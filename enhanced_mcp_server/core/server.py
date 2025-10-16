@@ -1,15 +1,68 @@
-# /enhanced_mcp_server/core/server.py (FastMCP HTTP simplificado)
-import os
-from mcp.server.fastmcp import FastMCP
+# /enhanced_mcp_server/core/server.py (FastAPI MCP básico)
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
+import json
+
+app = FastAPI(title="MCPserve")
+
+@app.post("/mcp")
+async def mcp_endpoint(request: dict):
+    """Endpoint MCP HTTP básico."""
+    try:
+        method = request.get("method")
+        if method == "initialize":
+            return {
+                "jsonrpc": "2.0",
+                "id": request.get("id"),
+                "result": {
+                    "protocolVersion": "2025-06-18",
+                    "capabilities": {
+                        "tools": {
+                            "listChanged": True
+                        }
+                    },
+                    "serverInfo": {
+                        "name": "MCPserve",
+                        "version": "0.1.0"
+                    }
+                }
+            }
+        elif method == "tools/list":
+            return {
+                "jsonrpc": "2.0",
+                "id": request.get("id"),
+                "result": {
+                    "tools": [
+                        {
+                            "name": "ping",
+                            "description": "Responde com pong.",
+                            "inputSchema": {
+                                "type": "object",
+                                "properties": {}
+                            }
+                        }
+                    ]
+                }
+            }
+        elif method == "tools/call":
+            tool_name = request.get("params", {}).get("name")
+            if tool_name == "ping":
+                return {
+                    "jsonrpc": "2.0",
+                    "id": request.get("id"),
+                    "result": {
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": "pong"
+                            }
+                        ]
+                    }
+                }
+        return JSONResponse(status_code=400, content={"error": "Method not supported"})
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
 
 def create_server():
-    """Cria um servidor MCP HTTP simplificado."""
-    # Configuração mais simples para compatibilidade
-    mcp = FastMCP(name="MCPserve")
-
-    @mcp.tool(name="ping", description="Responde com pong.")
-    async def ping() -> str:
-        return "pong"
-
-    # Retornar o app HTTP diretamente
-    return mcp.streamable_http_app()
+    """Retorna o app FastAPI para Smithery."""
+    return app
