@@ -1,39 +1,51 @@
-# Enhanced MCP Server
+# MCPserve
 
 [![Smithery Deploy](https://img.shields.io/badge/Smithery-Publish-blue?logo=vercel)](https://smithery.ai)
-[![PyPI version](https://img.shields.io/pypi/v/enhanced-mcp-server.svg)](https://pypi.org/project/enhanced-mcp-server/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![smithery badge](https://smithery.ai/badge/@your-username/enhanced-mcp-server)](https://smithery.ai/server/@your-username/enhanced-mcp-server)
+[![smithery badge](https://smithery.ai/badge/@dronreef2/MCPserve)](https://smithery.ai/server/@dronreef2/MCPserve)
 
-Servidor MCP (Model Context Protocol) avançado e robusto que fornece ferramentas de IA para busca na web, tradução e otimização de prompts. Implementa as melhores práticas de desenvolvimento com validação de entrada, tratamento de erros abrangente, logging estruturado, cache inteligente e segurança aprimorada.
+Servidor MCP (Model Context Protocol) básico implementado em Python com FastAPI. Fornece ferramentas de IA para busca na web, tradução e otimização de prompts através do protocolo MCP HTTP.
 
 ## 🚀 Funcionalidades
 
 ### Ferramentas Disponíveis
-- **🔍 fetch**: Busca conteúdo completo de páginas web usando Jina AI com validação de segurança
-- **🌐 search**: Pesquisa inteligente na web usando Jina AI com resultados contextualizados
-- **🌍 translate_deepl**: Tradução avançada entre múltiplos idiomas usando DeepL API
-
-### Prompts Disponíveis
-- **✨ optimize_prompt**: Otimiza prompts usando templates estruturados profissionais
+- **🏓 ping**: Ferramenta básica que responde "pong" (implementada)
+- **🔍 fetch**: Busca conteúdo completo de páginas web usando Jina AI (planejado)
+- **🌐 search**: Pesquisa inteligente na web usando Jina AI (planejado)
+- **🌍 translate_deepl**: Tradução avançada entre múltiplos idiomas usando DeepL API (planejado)
 
 ### Recursos Avançados
-- **🧠 Cache Inteligente**: Redis com fallback para memória local
-- **🔐 Sistema de Autenticação**: API keys com controle de acesso
-- **📊 Interface Web**: Dashboard responsivo com tema claro/escuro
-- **📝 Logging Estruturado**: Logs em JSON com níveis configuráveis
-- **🛡️ Segurança Aprimorada**: Validação de entrada e rate limiting
-- **🐳 Containerização**: Docker multi-stage com otimização
+- **📡 Protocolo MCP HTTP**: Implementação completa do Model Context Protocol via HTTP
+- **🐳 Containerização**: Docker com Python 3.12 e uv para gerenciamento de dependências
+- **� Configuração**: Sistema de configurações com Pydantic e variáveis de ambiente
+- **📝 Logging Estruturado**: Logs estruturados com structlog
+- **🗄️ Cache**: Sistema de cache com Redis (opcional) e fallback para memória
 
-## 🛡️ Recursos de Segurança e Robustez
+## �️ Status do Projeto
 
-- ✅ **Validação de entrada**: URLs, consultas e textos são validados rigorosamente
-- ✅ **Tratamento de erros**: Mensagens específicas e logging detalhado
-- ✅ **Rate limiting**: Proteção contra abuso com configuração flexível
-- ✅ **Timeouts**: Prevenção de travamentos por requests lentos
-- ✅ **Sanitização**: Filtragem de termos bloqueados e URLs perigosas
-- ✅ **Autenticação**: Sistema de API keys para controle de acesso
-- ✅ **Auditoria**: Logs completos de todas as operações
+### ✅ Implementado
+- Servidor MCP HTTP básico funcional
+- Endpoint `/mcp` com suporte aos métodos: `initialize`, `tools/list`, `tools/call`
+- Ferramenta `ping` funcional
+- Deploy automático no Smithery
+- Configuração com API keys (Jina, DeepL)
+- Sistema de cache inteligente
+- Containerização com Docker
+
+### � Em Desenvolvimento
+- Implementação das ferramentas completas (fetch, search, translate)
+- Interface web de monitoramento
+- Sistema de autenticação
+- Rate limiting e segurança avançada
+
+### 📋 Próximos Passos
+1. Implementar ferramenta `fetch` para busca de conteúdo web
+2. Implementar ferramenta `search` para pesquisa na web
+3. Implementar ferramenta `translate_deepl` para tradução
+4. Adicionar interface web de dashboard
+5. Implementar sistema de autenticação e rate limiting
+6. Adicionar testes automatizados
+7. Documentação completa das APIs
 
 ## 📦 Instalação
 
@@ -49,9 +61,27 @@ cd enhanced-mcp-server
 pip install -e .[web,cache]
 ```
 
-### Via Smithery (Claude Desktop / clientes MCP)
+## 📦 Instalação
+
+### Via Smithery (Recomendado)
 ```bash
-npx -y @smithery/cli install @your-username/enhanced-mcp-server
+npx -y @smithery/cli install @dronreef2/MCPserve --client claude
+```
+
+### Via Código Fonte
+```bash
+git clone https://github.com/dronreef2/MCPserve.git
+cd MCPserve
+pip install -e .
+```
+
+### Docker
+```bash
+# Construir e executar
+docker-compose up --build
+
+# Apenas o servidor MCP
+docker run mcpserve python -m enhanced_mcp_server.main
 ```
 
 ## ⚙️ Configuração

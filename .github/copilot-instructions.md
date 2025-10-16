@@ -1,17 +1,57 @@
-# Enhanced MCP Server - AI Agent Instructions
+# MCPserve - AI Agent Instructions
 
 ## Architecture Overview
-This is a Python MCP (Model Context Protocol) server built with FastMCP, providing AI tools for web search, translation, and prompt optimization. Key components:
+This is a Python MCP (Model Context Protocol) server built with FastAPI, providing AI tools for web search, translation, and prompt optimization. Currently implements basic MCP HTTP protocol with a ping tool, with plans for full tool implementation.
 
-- **Core Server** (`enhanced_mcp_server/core/server.py`): FastMCP instance with HTTP deployment
-- **Tools** (`enhanced_mcp_server/tools/`): Web fetch, search, translation, and prompt optimization
+## Current Implementation Status
+
+### ✅ Completed
+- **Basic MCP HTTP Server**: FastAPI-based server implementing MCP protocol
+- **Ping Tool**: Simple tool that responds with "pong"
+- **Smithery Deployment**: Automatic deployment with Docker and uv
+- **Configuration System**: Pydantic settings with environment variables
+- **Caching System**: Redis lazy loading with memory fallback
+- **Structured Logging**: JSON logging with configurable levels
+
+### 🚧 In Progress / Planned
+- **Full Tool Implementation**: fetch, search, translate_deepl tools
+- **Web Dashboard**: Monitoring interface
+- **Authentication System**: API key management
+- **Rate Limiting**: Request throttling
+- **Comprehensive Testing**: Unit and integration tests
+
+## Key Components
+
+- **Core Server** (`enhanced_mcp_server/core/server.py`): FastAPI MCP server with HTTP endpoints
 - **Cache** (`enhanced_mcp_server/cache/`): Redis with lazy connection + memory fallback
-- **Auth** (`enhanced_mcp_server/auth/`): API key-based authentication system
 - **Config** (`enhanced_mcp_server/config/settings.py`): Pydantic settings with `.env` support
-- **Web** (`enhanced_mcp_server/web/`): FastAPI dashboard for monitoring
 - **Utils** (`enhanced_mcp_server/utils/`): Structured logging with `structlog`
 
 ## Critical Patterns & Conventions
+
+### MCP HTTP Protocol Implementation
+```python
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
+
+app = FastAPI(title="MCPserve")
+
+@app.post("/mcp")
+async def mcp_endpoint(request: dict):
+    """Handle MCP protocol requests."""
+    method = request.get("method")
+    if method == "initialize":
+        return {
+            "jsonrpc": "2.0",
+            "id": request.get("id"),
+            "result": {
+                "protocolVersion": "2025-06-18",
+                "capabilities": {"tools": {"listChanged": True}},
+                "serverInfo": {"name": "MCPserve", "version": "0.1.0"}
+            }
+        }
+    # Handle other methods...
+```
 
 ### Configuration Access
 ```python
@@ -39,25 +79,6 @@ async def expensive_api_call(query: str):
     return await api_request(query)
 ```
 
-### URL Validation
-```python
-from enhanced_mcp_server.tools import validate_url
-
-if not validate_url(url):
-    raise ValidationError("Invalid or unsafe URL")
-```
-
-### Error Handling
-```python
-from enhanced_mcp_server.tools import ValidationError
-
-try:
-    result = await operation()
-except ValidationError as e:
-    logger.warning("Validation failed", error=str(e))
-    return {"error": "Invalid input"}
-```
-
 ## Development Workflows
 
 ### Local Development
@@ -68,8 +89,8 @@ python -m enhanced_mcp_server.main --check-config
 # Run MCP server (stdio mode)
 python -m enhanced_mcp_server.main
 
-# Run web interface
-python -m enhanced_mcp_server.web.app
+# Test MCP server with smithery CLI
+smithery inspect @dronreef2/MCPserve
 ```
 
 ### Docker Development
@@ -78,7 +99,7 @@ python -m enhanced_mcp_server.web.app
 docker-compose up --build
 
 # Just MCP server
-docker run enhanced-mcp-server python -m enhanced_mcp_server.main
+docker run mcpserve python -m enhanced_mcp_server.main
 ```
 
 ### Testing
@@ -88,9 +109,6 @@ pytest
 
 # With coverage
 pytest --cov=enhanced_mcp_server --cov-report=html
-
-# Specific test file
-pytest tests/test_tools.py
 ```
 
 ### Smithery Deployment
@@ -132,14 +150,12 @@ async def tool_function(param: str) -> dict:
 ```
 
 ## File Structure Reference
-- `enhanced_mcp_server/core/`: Server implementation
-- `enhanced_mcp_server/tools/`: MCP tool definitions
-- `enhanced_mcp_server/cache/`: Caching system
-- `enhanced_mcp_server/auth/`: Authentication
-- `enhanced_mcp_server/config/`: Settings management
-- `enhanced_mcp_server/web/`: Web dashboard
+- `enhanced_mcp_server/core/`: Server implementation (FastAPI MCP server)
+- `enhanced_mcp_server/tools/`: MCP tool definitions (currently basic ping)
+- `enhanced_mcp_server/cache/`: Caching system with Redis fallback
+- `enhanced_mcp_server/config/`: Settings management with Pydantic
 - `enhanced_mcp_server/utils/`: Logging and utilities
-- `tests/`: Pytest test suite
-- `templates/`: HTML templates
-- `static/`: Static web assets</content>
+- `tests/`: Pytest test suite (to be implemented)
+- `templates/`: HTML templates (planned)
+- `static/`: Static web assets (planned)</content>
 <parameter name="filePath">/workspaces/MCPserve/.github/copilot-instructions.md
