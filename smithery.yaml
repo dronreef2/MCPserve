@@ -1,3 +1,14 @@
+# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
+
+name: enhanced-mcp-server
+description: Advanced MCP server with AI tools, intelligent caching, and web interface for web content fetching, search, and translation
+author: Enhanced MCP Team
+tags: ["web", "search", "translation", "ai", "tools", "cache"]
+homepage: https://github.com/dronreef2/MCPserve
+license: MIT
+repository: https://github.com/dronreef2/MCPserve
+
+# Runtime configuration
 runtime: python
 startCommand:
   command: stdio
@@ -22,6 +33,6 @@ configSchema:
       type: string
       description: Log level (INFO, DEBUG)
 commandFunction: |
-  (config) => `JINA_API_KEY=${config.jinaApiKey} GEMINI_API_KEY=${config.geminiApiKey||''} DEEPL_API_KEY=${config.deeplApiKey||''} REDIS_URL=${config.redisUrl||''} LOG_LEVEL=${config.logLevel||'INFO'} PYTHONUNBUFFERED=1 PYTHONIOENCODING=utf-8 python main.py`
+  (config) => `JINA_API_KEY=${config.jinaApiKey} GEMINI_API_KEY=${config.geminiApiKey||''} DEEPL_API_KEY=${config.deeplApiKey||''} REDIS_URL=${config.redisUrl||''} LOG_LEVEL=${config.logLevel||'INFO'} PYTHONUNBUFFERED=1 PYTHONIOENCODING=utf-8 python -m enhanced_mcp_server.core.server`
 testConfig:
   jinaApiKey: "test_key_placeholder"

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Tools - Interface Moderna</title>
+    <title>Enhanced AI Tools</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -44,182 +44,92 @@
             background: var(--background);
             color: var(--text);
             min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        .hero {
-            background: var(--gradient);
-            padding: 4rem 2rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-            opacity: 0.1;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 1;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: fadeInUp 1s ease-out;
-        }
-
-        .hero p {
-            font-size: 1.25rem;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 2rem;
-            animation: fadeInUp 1s ease-out 0.2s both;
+            padding: 2rem;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 4rem;
+            background: var(--gradient);
             padding: 4rem 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.9);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
         }
 
         .tools-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
-            margin-top: 3rem;
+            margin-bottom: 4rem;
         }
 
         .tool-card {
             background: var(--surface);
-            border: 1px solid var(--border);
             border-radius: 16px;
             padding: 2rem;
-            text-align: center;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
             box-shadow: var(--shadow);
-        }
-
-        .tool-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
-            transition: left 0.5s;
-        }
-
-        .tool-card:hover::before {
-            left: 100%;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text);
         }
 
         .tool-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--primary);
-            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
         .tool-icon {
             font-size: 3rem;
-            margin-bottom: 1.5rem;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            filter: drop-shadow(0 4px 8px rgba(99, 102, 241, 0.3));
+            margin-bottom: 1rem;
+            color: var(--primary);
         }
 
-        .tool-title {
+        .tool-card h3 {
             font-size: 1.5rem;
             font-weight: 600;
-            color: var(--text);
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
 
-        .tool-description {
+        .tool-card p {
             color: var(--text-secondary);
-            margin-bottom: 2rem;
             line-height: 1.6;
-        }
-
-        .tool-features {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .feature-tag {
-            background: rgba(99, 102, 241, 0.1);
-            color: var(--primary);
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1rem 2rem;
-            background: var(--gradient);
-            color: white;
-            text-decoration: none;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
-        }
-
-        .btn i {
-            transition: transform 0.3s ease;
-        }
-
-        .btn:hover i {
-            transform: translateX(4px);
         }
 
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 2rem;
-            margin-top: 4rem;
-            text-align: center;
+            margin-bottom: 4rem;
         }
 
-        .stat-item {
-            padding: 2rem;
+        .stat-card {
             background: var(--surface);
             border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
             border: 1px solid var(--border);
         }
 
@@ -232,7 +142,7 @@
 
         .stat-label {
             color: var(--text-secondary);
-            font-size: 1rem;
+            font-size: 1.1rem;
         }
 
         .theme-toggle {
@@ -257,37 +167,17 @@
             transform: scale(1.1);
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
         @media (max-width: 768px) {
+            .hero {
+                padding: 3rem 1rem;
+            }
+
             .hero h1 {
                 font-size: 2.5rem;
             }
 
-            .hero p {
-                font-size: 1.1rem;
-            }
-
-            .container {
-                padding: 2rem 1rem;
-            }
-
             .tools-grid {
                 grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-
-            .tool-card {
-                padding: 1.5rem;
             }
         }
     </style>
@@ -297,68 +187,42 @@
         <i class="fas fa-moon"></i>
     </button>
 
-    <section class="hero">
-        <div class="hero-content">
-            <h1>🛠️ AI Tools Suite</h1>
-            <p>Interface moderna e intuitiva para ferramentas de IA avançadas. Busque, extraia e analise conteúdo web com tecnologia de ponta.</p>
-        </div>
-    </section>
-
     <div class="container">
-        <div class="tools-grid">
-            <div class="tool-card" onclick="window.location.href='/fetch'">
-                <div class="tool-icon">
-                    <i class="fas fa-search"></i>
-                </div>
-                <h3 class="tool-title">Buscar Conteúdo</h3>
-                <p class="tool-description">
-                    Extraia conteúdo completo de páginas web usando inteligência artificial avançada da Jina AI. Validação automática de URLs e segurança integrada.
-                </p>
-                <div class="tool-features">
-                    <span class="feature-tag"><i class="fas fa-shield-alt"></i> Seguro</span>
-                    <span class="feature-tag"><i class="fas fa-bolt"></i> Rápido</span>
-                    <span class="feature-tag"><i class="fas fa-brain"></i> IA</span>
-                </div>
-                <button class="btn">
-                    Usar Ferramenta
-                    <i class="fas fa-arrow-right"></i>
-                </button>
-            </div>
+        <section class="hero">
+            <h1><i class="fas fa-robot"></i> Enhanced AI Tools</h1>
+            <p>Ferramentas avançadas de inteligência artificial para busca web, tradução e otimização de prompts. Interface moderna e intuitiva para profissionais e desenvolvedores.</p>
+        </section>
 
-            <div class="tool-card" onclick="window.location.href='/search'">
+        <section class="tools-grid">
+            {% for tool in tools %}
+            <a href="/{{ tool.name }}" class="tool-card">
                 <div class="tool-icon">
-                    <i class="fas fa-globe"></i>
+                    <i class="{{ tool.icon }}"></i>
                 </div>
-                <h3 class="tool-title">Pesquisar na Web</h3>
-                <p class="tool-description">
-                    Realize pesquisas inteligentes na web com resultados contextualizados. Tecnologia de busca avançada para descobertas precisas e relevantes.
-                </p>
-                <div class="tool-features">
-                    <span class="feature-tag"><i class="fas fa-search"></i> Inteligente</span>
-                    <span class="feature-tag"><i class="fas fa-filter"></i> Filtrado</span>
-                    <span class="feature-tag"><i class="fas fa-tachometer-alt"></i> Otimizado</span>
-                </div>
-                <button class="btn">
-                    Usar Ferramenta
-                    <i class="fas fa-arrow-right"></i>
-                </button>
-            </div>
-        </div>
+                <h3>{{ tool.title }}</h3>
+                <p>{{ tool.description }}</p>
+            </a>
+            {% endfor %}
+        </section>
 
-        <div class="stats">
-            <div class="stat-item">
-                <div class="stat-number">2</div>
+        <section class="stats">
+            <div class="stat-card">
+                <div class="stat-number">4</div>
                 <div class="stat-label">Ferramentas Disponíveis</div>
             </div>
-            <div class="stat-item">
-                <div class="stat-number">99%</div>
-                <div class="stat-label">Precisão de Resultados</div>
+            <div class="stat-card">
+                <div class="stat-number">∞</div>
+                <div class="stat-label">Possibilidades</div>
             </div>
-            <div class="stat-item">
+            <div class="stat-card">
+                <div class="stat-number">AI</div>
+                <div class="stat-label">Powered</div>
+            </div>
+            <div class="stat-card">
                 <div class="stat-number">24/7</div>
-                <div class="stat-label">Disponibilidade</div>
+                <div class="stat-label">Disponível</div>
             </div>
-        </div>
+        </section>
     </div>
 
     <script>
@@ -399,20 +263,12 @@
             });
         }, observerOptions);
 
-        // Observe tool cards
-        document.querySelectorAll('.tool-card').forEach(card => {
+        // Observe all cards
+        document.querySelectorAll('.tool-card, .stat-card').forEach(card => {
             card.style.opacity = '0';
-            card.style.transform = 'translateY(30px)';
+            card.style.transform = 'translateY(20px)';
             card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
             observer.observe(card);
-        });
-
-        // Observe stat items
-        document.querySelectorAll('.stat-item').forEach(stat => {
-            stat.style.opacity = '0';
-            stat.style.transform = 'translateY(30px)';
-            stat.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(stat);
         });
     </script>
 </body>

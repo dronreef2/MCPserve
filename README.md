@@ -1,346 +1,262 @@
-# ai-tools MCP Server
+# Enhanced MCP Server
 
 [![Smithery Deploy](https://img.shields.io/badge/Smithery-Publish-blue?logo=vercel)](https://smithery.ai)
-[![PyPI version](https://img.shields.io/pypi/v/ai-tools-mcp-server.svg)](https://pypi.org/project/ai-tools-mcp-server/)
+[![PyPI version](https://img.shields.io/pypi/v/enhanced-mcp-server.svg)](https://pypi.org/project/enhanced-mcp-server/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Este é um servidor MCP avançado e robusto que fornece ferramentas de IA para busca na web, tradução e otimização de prompts. Implementa as melhores práticas de desenvolvimento com validação de entrada, tratamento de erros abrangente, logging estruturado e segurança aprimorada.
+Servidor MCP (Model Context Protocol) avançado e robusto que fornece ferramentas de IA para busca na web, tradução e otimização de prompts. Implementa as melhores práticas de desenvolvimento com validação de entrada, tratamento de erros abrangente, logging estruturado, cache inteligente e segurança aprimorada.
 
 ## 🚀 Funcionalidades
 
-### Ferramentas Disponíveis:
-- **fetch**: Busca conteúdo de páginas web usando Jina AI (com validação de URL e segurança)
-- **search**: Pesquisa na web usando Jina AI (com filtros de segurança)
-- **translate**: Tradução entre idiomas usando Gemini (com validação de idiomas)
-- **translate_deepl**: Tradução avançada usando DeepL API (suporte completo de idiomas)
+### Ferramentas Disponíveis
+- **🔍 fetch**: Busca conteúdo completo de páginas web usando Jina AI com validação de segurança
+- **🌐 search**: Pesquisa inteligente na web usando Jina AI com resultados contextualizados
+- **🗣️ translate**: Tradução automática entre português e inglês usando Gemini AI
+- **🌍 translate_deepl**: Tradução avançada entre múltiplos idiomas usando DeepL API
 
-### Prompts Disponíveis:
-- **optimize_prompt**: Otimiza prompts de usuário com templates detalhados
+### Prompts Disponíveis
+- **✨ optimize_prompt**: Otimiza prompts usando templates estruturados profissionais
 
-> Nota: Este servidor é 100% stdio (não abre porta HTTP). Para ambientes de hospedagem que tentam invocar um binário `smithery`, incluímos um script shim `./smithery` que simplesmente inicia `python main.py` garantindo compatibilidade.
+### Recursos Avançados
+- **🧠 Cache Inteligente**: Redis com fallback para memória local
+- **🔐 Sistema de Autenticação**: API keys com controle de acesso
+- **📊 Interface Web**: Dashboard responsivo com tema claro/escuro
+- **📝 Logging Estruturado**: Logs em JSON com níveis configuráveis
+- **🛡️ Segurança Aprimorada**: Validação de entrada e rate limiting
+- **🐳 Containerização**: Docker multi-stage com otimização
 
 ## 🛡️ Recursos de Segurança e Robustez
 
-- ✅ **Validação de entrada**: URLs, consultas e textos são validados
-- ✅ **Tratamento de erros**: Mensagens de erro específicas e logging detalhado
-- ✅ **Rate limiting**: Proteção contra abuso das APIs
+- ✅ **Validação de entrada**: URLs, consultas e textos são validados rigorosamente
+- ✅ **Tratamento de erros**: Mensagens específicas e logging detalhado
+- ✅ **Rate limiting**: Proteção contra abuso com configuração flexível
 - ✅ **Timeouts**: Prevenção de travamentos por requests lentos
 - ✅ **Sanitização**: Filtragem de termos bloqueados e URLs perigosas
-- ✅ **Logging estruturado**: Rastreamento completo de operações
-- ✅ **Configuração validada**: Verificação de chaves API no startup
-- ✅ **Cache inteligente**: Redis/memory fallback para reduzir chamadas API
 - ✅ **Autenticação**: Sistema de API keys para controle de acesso
-- ✅ **Monitoramento**: Dashboard admin com métricas em tempo real
+- ✅ **Auditoria**: Logs completos de todas as operações
 
 ## 📦 Instalação
 
-### Via PyPI (futuro publish):
+### Via PyPI (futuro)
 ```bash
-pip install ai-tools-mcp-server
+pip install enhanced-mcp-server
 ```
 
-### Via Código Fonte:
+### Via Código Fonte
 ```bash
-git clone https://github.com/dronreef2/MCPserve.git
-cd MCPserve
-pip install -e .[dashboard]
+git clone https://github.com/your-org/enhanced-mcp-server.git
+cd enhanced-mcp-server
+pip install -e .[web,cache]
 ```
 
-### Via Smithery (Claude Desktop / clientes MCP):
-Instalação automática:
+### Via Smithery (Claude Desktop / clientes MCP)
 ```bash
-npx -y @smithery/cli install @dronreef2/mcpserve --client claude
-```
-
-Inicialização local para desenvolvimento com túnel:
-```bash
-smithery dev --config smithery.config.js
-```
-
-Ou inicialização stdio (para clientes):
-```bash
-smithery dev --key <dev-key> --no-tunnel
+npx -y @smithery/cli install @your-org/enhanced-mcp-server --client claude
 ```
 
 ## ⚙️ Configuração
 
-Configure as seguintes variáveis de ambiente:
+Configure as variáveis de ambiente no arquivo `.env`:
 
-| Variável | Obrigatória | Descrição |
-|----------|-------------|-----------|
-| `JINA_API_KEY` | Sim | Chave para busca e fetch via Jina AI |
-| `GEMINI_API_KEY` | Não | Traduções via Gemini |
-| `DEEPL_API_KEY` | Não | Traduções avançadas via DeepL |
-| `REDIS_URL` | Não | URL do Redis (ex: redis://localhost:6379) |
-| `LOG_LEVEL` | Não | Nível de log (INFO, DEBUG, WARNING) |
-| `PORT` | Não | Porta do dashboard (default 8000) |
-
-Exemplo rápido (.env):
 ```env
-JINA_API_KEY=jina_xxxxxxxxx
-GEMINI_API_KEY=xxxx
-DEEPL_API_KEY=xxxx
+# API Keys (obrigatórias para funcionalidades específicas)
+JINA_API_KEY=jina_your_api_key_here
+GEMINI_API_KEY=your_gemini_api_key_here
+DEEPL_API_KEY=your_deepl_api_key_here
+
+# Cache (opcional)
 REDIS_URL=redis://localhost:6379
+
+# Logging
+LOG_LEVEL=INFO
+
+# Web Interface
+WEB_HOST=0.0.0.0
+WEB_PORT=8001
+
+# Segurança
+ENABLE_AUTH=true
+RATE_LIMIT_REQUESTS=100
+RATE_LIMIT_WINDOW=60
 ```
 
-## 🏃‍♂️ Execução Local
+## 🏃‍♂️ Execução
 
-### Python (Recomendado):
+### Modo MCP (stdio)
 ```bash
-python main.py
+# Verificar configuração
+python -m enhanced_mcp_server.main --check-config
+
+# Executar servidor MCP
+python -m enhanced_mcp_server.main
 ```
 
-### Interface Web (Front-end):
+### Interface Web
 ```bash
-# Opção 1: Script automático (recomendado)
-./run_web.sh
+# Executar aplicação web
+python -m enhanced_mcp_server.web.app
 
-# Opção 2: Comando direto
-python web_app.py
+# Ou usar o script direto
+enhanced-mcp-web
 ```
 Acesse: http://localhost:8001
 
-**Recursos da Interface Web:**
-- 🔍 **Buscar Conteúdo**: Interface simples para extrair conteúdo de URLs
-- 🌐 **Pesquisar na Web**: Ferramenta de pesquisa com resultados formatados
-- 📱 **Interface Responsiva**: Funciona em desktop e mobile
-- ⚡ **Execução Direta**: Usa as ferramentas MCP diretamente (sem protocolo stdio)
-
-### Go:
+### Docker
 ```bash
-go run main.go
+# Construir e executar
+docker-compose up --build
+
+# Apenas o servidor MCP
+docker run enhanced-mcp-server python -m enhanced_mcp_server.main
 ```
 
 ## 🧪 Testes
 
-Execute os testes básicos:
 ```bash
-python test_basic.py
+# Todos os testes
+pytest
+
+# Testes específicos
+pytest tests/test_tools.py
+pytest tests/test_cache.py
+pytest tests/test_auth.py
+
+# Com cobertura
+pytest --cov=enhanced_mcp_server --cov-report=html
 ```
 
-### Testes de Integração E2E:
+## 📊 Monitoramento
+
+### Interface Web
+- **Dashboard**: http://localhost:8001
+- **Health Check**: http://localhost:8001/health
+- **Cache Stats**: http://localhost:8001/cache/stats
+
+### Logs
 ```bash
-python test_e2e.py
-```
+# Visualizar logs em tempo real
+tail -f logs/app.log
 
-### Cobertura de Testes:
-- ✅ **Unidade**: Funções individuais e validações
-- ✅ **Integração**: Fluxos completos de API
-- ✅ **Autenticação**: Controle de acesso e permissões
-- ✅ **Cache**: Operações de armazenamento/recuperação
-- ✅ **E2E**: Cenários reais de uso do servidor MCP
-
-## 📊 Monitoramento e Logs
-
-### Dashboard Administrativo:
-```bash
-python dashboard.py
-```
-Acesse: http://localhost:8000
-
-**Recursos do Dashboard:**
-- 📈 Métricas em tempo real (CPU, memória, rede)
-- 🔍 Estatísticas do cache (hits, misses, taxa de acerto)
-- 👥 Gerenciamento de usuários e chaves API
-- 📋 Logs de atividade do sistema
-- 🏥 Status de saúde dos serviços
-
-### Logs do Sistema:
-- Logs estruturados em JSON
-- Níveis configuráveis (DEBUG, INFO, WARNING, ERROR)
-- Rotações automáticas de arquivos
-- Monitoramento de performance e erros
-
-O servidor gera logs estruturados com níveis apropriados:
-- **INFO**: Operações normais
-- **WARNING**: Problemas não críticos
-- **ERROR**: Erros que requerem atenção
-
-## 🌐 Publicação / Smithery
-
-### Verificação local (stdio):
-Se a CLI detectar `smithery.yaml`, basta:
-```bash
-smithery dev --key <dev-key>
-```
-Ou especificando manualmente o comando stdio:
-```bash
-smithery dev --stdio "python main.py" --key <dev-key>
-```
-
-### Publicar (após tag semver):
-1. Crie tag: `git tag v0.2.0 && git push --tags`
-2. Aguarde CI verde no GitHub Actions
-3. O Smithery detectará automaticamente a tag e permitirá publicação via painel web (runtime Python stdio)
-4. Acesse https://smithery.ai e publique o servidor
-
-### Checklist antes do Publish:
-- [x] pyproject com metadados
-- [x] smithery.yaml exporta commandFunction válido
-- [x] Testes passam (`pytest`)
-- [x] README com instruções claras
-- [x] Variáveis sensíveis não commitadas
-
-## 🧪 Teste das Ferramentas
-
-### Exemplo de uso das ferramentas:
-```python
-# Buscar conteúdo de uma página
-fetch("https://example.com")
-
-# Pesquisar na web
-search("tecnologia MCP")
-
-# Traduzir texto
-translate("Olá mundo", "pt", "en")
-
-# Otimizar prompt
-optimize_prompt("Como criar um servidor MCP?")
+# Logs estruturados (JSON)
+jq . logs/app.log
 ```
 
 ## 🏗️ Arquitetura
 
-- **Python**: Implementação principal com FastMCP e validações robustas
-- **Go**: Versão alternativa mais performática
-- **Docker**: Containerização multi-stage com configurações otimizadas
-- **Configuração**: Sistema de configuração com validação
-- **Logging**: Logging estruturado com níveis apropriados
-- **Testes**: Suite básica de testes unitários
+```
+enhanced-mcp-server/
+├── enhanced_mcp_server/
+│   ├── core/           # Servidor MCP principal
+│   ├── tools/          # Implementação das ferramentas
+│   ├── prompts/        # Templates de otimização
+│   ├── cache/          # Sistema de cache inteligente
+│   ├── auth/           # Autenticação e autorização
+│   ├── config/         # Configurações centralizadas
+│   ├── utils/          # Utilitários (logging, etc.)
+│   └── web/            # Interface web FastAPI
+├── tests/              # Testes unitários e integração
+├── templates/          # Templates HTML
+├── static/             # Arquivos estáticos
+└── docs/               # Documentação
+```
 
 ## ⚡ Cache e Performance
 
-### Sistema de Cache Inteligente:
-O servidor utiliza Redis para cache com fallback automático para memória:
+### Sistema de Cache Híbrido
+- **Redis**: Cache distribuído de alta performance
+- **Memória**: Fallback automático quando Redis indisponível
+- **TTL Inteligente**: Tempos de vida diferentes por tipo de conteúdo
+- **Compressão**: Resultados grandes são comprimidos automaticamente
 
+### Configuração de Cache
 ```python
-from cache import cache
-
-@cache(ttl=3600)  # Cache por 1 hora
-def expensive_api_call(query):
-    # Chamada cara para API externa
-    return result
+# Cache automático com decorador
+@cache.cached(ttl=3600)
+async def expensive_operation():
+    return await api_call()
 ```
-
-### Benefícios do Cache:
-- 🚀 **Performance**: Redução significativa no tempo de resposta
-- 💰 **Custos**: Menos chamadas para APIs pagas
-- 🔄 **Fallback**: Funciona mesmo sem Redis (memória local)
-- 📊 **Métricas**: Estatísticas detalhadas de uso
-
-### Configuração do Cache:
-- **TTL padrão**: 1 hora para resultados de busca
-- **TTL tradução**: 24 horas (conteúdo estático)
-- **Limite memória**: 100MB quando sem Redis
-- **Compressão**: Resultados grandes são comprimidos
-
-## 👨‍💼 Dashboard de Administração
-
-Interface web para monitoramento e gerenciamento:
-
-```bash
-python dashboard.py
-# Acesse: http://localhost:8001
-```
-
-### Funcionalidades do Dashboard:
-- 📊 **Métricas do sistema**: CPU, memória, uptime
-- 📈 **Performance do cache**: Taxa de acertos, estatísticas
-- 🔑 **Status das APIs**: Verificação de conectividade
-- 📝 **Logs de atividade**: Ações recentes do servidor
-- 🗑️ **Gerenciamento**: Limpeza de cache, reinicialização
 
 ## 🔐 Segurança e Autenticação
 
-### Sistema de Autenticação:
-O servidor implementa autenticação baseada em API keys para controle de acesso:
-
+### Sistema de API Keys
 ```python
-# Gerar nova chave API
-from auth import generate_api_key
-key = generate_api_key("user@example.com", role="user")
+from enhanced_mcp_server.auth import auth_manager
 
-# Usar chave na requisição
-headers = {"Authorization": f"Bearer {key}"}
+# Gerar nova chave
+key = auth_manager.generate_api_key("user@example.com", role="user")
+
+# Validar chave
+user = auth_manager.validate_api_key(api_key)
 ```
 
-### Níveis de Acesso:
-- **admin**: Acesso completo ao sistema e dashboard
+### Níveis de Acesso
+- **admin**: Acesso completo ao sistema
 - **user**: Acesso às ferramentas MCP
-- **readonly**: Acesso apenas leitura (logs, métricas)
+- **readonly**: Acesso apenas leitura
 
-### Recursos de Segurança:
-- 🔒 **Criptografia**: Chaves API armazenadas com hash seguro
-- 🛡️ **Validação**: Todas as entradas são sanitizadas
-- 🚫 **Bloqueio**: Lista de termos e URLs perigosos
-- ⏱️ **Rate Limiting**: Proteção contra abuso
-- 📝 **Auditoria**: Logs completos de todas as operações
+## 🌐 Publicação / Smithery
 
-## � Troubleshooting
-
-### Problemas Comuns:
-
-**Erro de API Key:**
-```
-ERROR: Missing required API key: JINA_API_KEY
-```
-Solução: Configure as variáveis de ambiente corretamente.
-
-**Erro de Cache Redis:**
-```
-WARNING: Redis unavailable, using memory cache
-```
-Solução: Verifique se Redis está rodando ou configure corretamente.
-
-**Erro de Autenticação:**
-```
-ERROR: Invalid API key
-```
-Solução: Verifique se a chave API está correta e não expirou.
-
-### Debug Mode:
-Execute com debug para mais informações:
+### Verificação Local
 ```bash
-DEBUG=1 python main.py
+smithery dev --key <dev-key>
 ```
 
-### Logs de Debug:
-- Verifique `/logs/app.log` para erros detalhados
-- Use o dashboard para monitorar em tempo real
-- Execute testes E2E para validar funcionalidade
+### Checklist para Publicação
+- [x] Testes passando
+- [x] smithery.yaml configurado
+- [x] pyproject.toml com metadados
+- [x] Documentação completa
+- [x] Logs estruturados
+- [x] Segurança implementada
 
-### Suporte:
-Para suporte técnico:
-1. Verifique os logs do sistema
-2. Execute os testes para validar funcionamento
-3. Consulte a documentação das APIs (Jina, Gemini, DeepL)
-4. Abra uma issue no repositório com logs anexados
+## 🧪 Teste das Ferramentas
 
-##  TODO
+### Exemplos de Uso
+```python
+# Buscar conteúdo web
+result = await fetch("https://example.com")
 
-- [x] Implementar validação de entrada robusta
-- [x] Adicionar tratamento de erros abrangente
-- [x] Implementar logging estruturado
-- [x] Adicionar testes básicos
-- [x] Melhorar segurança das APIs
-- [x] Implementar cache Redis para reduzir chamadas API
-- [x] Adicionar dashboard de administração com métricas
-- [x] Implementar sistema de autenticação com API keys
-- [x] Criar testes E2E abrangentes
-- [x] Documentar todas as funcionalidades implementadas
-- [ ] Implementar métricas avançadas de performance
-- [ ] Adicionar suporte a múltiplos idiomas no dashboard
-- [ ] Criar documentação de API completa
-- [ ] Implementar backup automático de configurações
+# Pesquisar na web
+results = await search("tecnologia MCP")
+
+# Traduzir texto
+translation = await translate("Hello world", "en", "pt")
+
+# Otimizar prompt
+optimized = optimize_prompt("Como criar um servidor MCP?")
+```
 
 ## 🤝 Contribuição
 
-Para contribuir:
-1. Execute os testes: `python test_basic.py`
-2. Verifique os logs durante desenvolvimento
-3. Adicione testes para novas funcionalidades
-4. Siga as melhores práticas de segurança implementadas
-5. Use o smithery-ai[bot] para assistência no desenvolvimento
+1. Fork o projeto
+2. Crie uma branch: `git checkout -b feature/nova-funcionalidade`
+3. Commit suas mudanças: `git commit -am 'Adiciona nova funcionalidade'`
+4. Push para a branch: `git push origin feature/nova-funcionalidade`
+5. Abra um Pull Request
+
+### Diretrizes
+- Siga PEP 8 para código Python
+- Adicione testes para novas funcionalidades
+- Atualize a documentação
+- Use commits semânticos
 
 ## 📄 Licença
 
-MIT License - veja LICENSE para detalhes.
+MIT License - veja [LICENSE](LICENSE) para detalhes.
+
+## 🙏 Agradecimentos
+
+- [yiGmMk/mcp-server](https://github.com/yiGmMk/mcp-server) - Inspiração inicial
+- [dronreef2/MCPserve](https://github.com/dronreef2/MCPserve) - Base do projeto
+- [Model Context Protocol](https://modelcontextprotocol.io/) - Protocolo MCP
+- [Smithery](https://smithery.ai) - Plataforma de publicação
+
+## 📞 Suporte
+
+- **Issues**: [GitHub Issues](https://github.com/your-org/enhanced-mcp-server/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/your-org/enhanced-mcp-server/discussions)
+- **Email**: team@example.com
+
+---
+
+**⭐ Star este repositório se achou útil!**

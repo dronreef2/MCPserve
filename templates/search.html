@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pesquisar na Web - AI Tools</title>
+    <title>Pesquisar na Web - Enhanced AI Tools</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -335,20 +335,19 @@
             <ul>
                 <li><i class="fas fa-code"></i> "Como implementar autenticação JWT em Python"</li>
                 <li><i class="fas fa-brain"></i> "Últimas tendências em aprendizado de máquina"</li>
-                <li><i class="fas fa-globe"></i> "Notícias sobre desenvolvimento sustentável"</li>
+                <li class="fas fa-globe"></i> "Notícias sobre desenvolvimento sustentável"</li>
                 <li><i class="fas fa-robot"></i> "Tutoriais de IA generativa para iniciantes"</li>
             </ul>
         </div>
 
-        <form method="post" id="searchForm">
+        <form id="searchForm">
             <div class="form-group">
                 <label for="query">
                     <i class="fas fa-search"></i> Consulta de pesquisa:
                 </label>
                 <div class="input-container">
                     <input type="text" id="query" name="query" required
-                           placeholder="Digite sua consulta de pesquisa..."
-                           value="{{ query or '' }}">
+                           placeholder="Digite sua consulta de pesquisa...">
                 </div>
             </div>
 
@@ -362,15 +361,7 @@
             </div>
         </form>
 
-        {% if result is defined %}
-            <div class="result {{ 'success' if success else 'error' }}">
-                <div class="result-header">
-                    <i class="fas fa-{{ 'check-circle' if success else 'exclamation-triangle' }}"></i>
-                    Resultados da Pesquisa
-                </div>
-                <div class="result-content">{{ result }}</div>
-            </div>
-        {% endif %}
+        <div id="result" style="display: none;"></div>
 
         <a href="/" class="back-link">
             <i class="fas fa-arrow-left"></i>
@@ -405,16 +396,55 @@
         const form = document.getElementById('searchForm');
         const submitBtn = document.getElementById('submitBtn');
         const progressBar = document.getElementById('progressBar');
+        const resultDiv = document.getElementById('result');
 
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+            const query = formData.get('query');
+
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<div class="loading"></div> Processando...';
             progressBar.style.display = 'block';
+            resultDiv.style.display = 'none';
 
-            // Auto-hide progress after 10 seconds
-            setTimeout(() => {
+            try {
+                const response = await fetch('/search', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                resultDiv.style.display = 'block';
+                resultDiv.className = data.success ? 'result success' : 'result error';
+                resultDiv.innerHTML = `
+                    <div class="result-header">
+                        <i class="fas fa-${data.success ? 'check-circle' : 'exclamation-triangle'}"></i>
+                        Resultados da Pesquisa
+                    </div>
+                    <div class="result-content">${data.result}</div>
+                `;
+
+                // Scroll to result
+                resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            } catch (error) {
+                resultDiv.style.display = 'block';
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `
+                    <div class="result-header">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Erro
+                    </div>
+                    <div class="result-content">Erro ao processar a requisição: ${error.message}</div>
+                `;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-search"></i> Pesquisar';
                 progressBar.style.display = 'none';
-            }, 10000);
+            }
         });
 
         // Query validation feedback
@@ -428,16 +458,6 @@
                 this.style.borderColor = 'var(--success)';
             }
         });
-
-        // Add smooth scrolling for results
-        if (window.location.hash === '#result') {
-            setTimeout(() => {
-                const result = document.querySelector('.result');
-                if (result) {
-                    result.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            }, 500);
-        }
     </script>
 </body>
 </html>
