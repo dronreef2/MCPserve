@@ -1,18 +1,15 @@
-# /enhanced_mcp_server/core/server.py (FastMCP configurado para HTTP)
+# /enhanced_mcp_server/core/server.py (FastMCP HTTP simplificado)
 import os
 from mcp.server.fastmcp import FastMCP
 
 def create_server():
-    """Cria um servidor MCP HTTP com ferramentas básicas."""
-    mcp = FastMCP(
-        name="enhanced-mcp-server",
-        streamable_http_path="/mcp",  # Endpoint MCP HTTP
-        host="0.0.0.0",
-        port=int(os.environ.get("PORT", 8000))
-    )
+    """Cria um servidor MCP HTTP simplificado."""
+    # Configuração mais simples para compatibilidade
+    mcp = FastMCP(name="MCPserve")
 
     @mcp.tool(name="ping", description="Responde com pong.")
     async def ping() -> str:
         return "pong"
 
-    return mcp.streamable_http_app()  # Chama o método para obter o app FastAPI
+    # Retornar o app HTTP diretamente
+    return mcp.streamable_http_app()
