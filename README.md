@@ -51,7 +51,7 @@ pip install -e .[web,cache]
 
 ### Via Smithery (Claude Desktop / clientes MCP)
 ```bash
-npx -y @smithery/cli install @your-org/enhanced-mcp-server --client claude
+npx -y @smithery/cli install @your-org/enhanced-mcp-server
 ```
 
 ## ⚙️ Configuração
