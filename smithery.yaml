@@ -1,4 +1,4 @@
-# smithery.yaml (versão mais simples)
+# smithery.yaml (ultra-minimal HTTP server test)
 name: test-mcp-server
 
 startCommand:
@@ -7,7 +7,7 @@ startCommand:
     |-
     (config) => ({
       command: 'python',
-      args: ['-c', 'print("Servidor iniciado"); import time; time.sleep(30)'],
+      args: ['-m', 'http.server', config.port.toString()],
       env: {
         PORT: config.port.toString(),
       }
