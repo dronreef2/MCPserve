@@ -11,7 +11,6 @@ Servidor MCP (Model Context Protocol) avançado e robusto que fornece ferramenta
 ### Ferramentas Disponíveis
 - **🔍 fetch**: Busca conteúdo completo de páginas web usando Jina AI com validação de segurança
 - **🌐 search**: Pesquisa inteligente na web usando Jina AI com resultados contextualizados
-- **🗣️ translate**: Tradução automática entre português e inglês usando Gemini AI
 - **🌍 translate_deepl**: Tradução avançada entre múltiplos idiomas usando DeepL API
 
 ### Prompts Disponíveis
@@ -61,7 +60,6 @@ Configure as variáveis de ambiente no arquivo `.env`:
 ```env
 # API Keys (obrigatórias para funcionalidades específicas)
 JINA_API_KEY=jina_your_api_key_here
-GEMINI_API_KEY=your_gemini_api_key_here
 DEEPL_API_KEY=your_deepl_api_key_here
 
 # Cache (opcional)
