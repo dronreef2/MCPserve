@@ -1,48 +1,16 @@
-# /smithery.yaml (versão final corrigida)
+# smithery.yaml (versão de teste MÍNIMA)
 
-name: enhanced-mcp-server
-description: Advanced MCP server with AI tools, intelligent caching, and web interface.
-author: Enhanced MCP Team
-tags: ["web", "search", "translation", "ai", "tools", "cache"]
-homepage: https://github.com/dronreef2/MCPserve
-license: MIT
-repository: https://github.com/dronreef2/MCPserve
+name: test-mcp-server
 
 startCommand:
-  # CORRIGIDO: Seu servidor é HTTP (FastMCP), não stdio.
   type: http
-
-  configSchema:
-    type: object
-    properties:
-      jinaApiKey:
-        type: string
-        description: API key for Jina AI (web fetching and search)
-      deeplApiKey:
-        type: string
-        description: API key for DeepL (advanced translation) (optional)
-      redisUrl:
-        type: string
-        description: Redis connection URL for caching (optional)
-    required:
-      - jinaApiKey
-
-  # CORRIGIDO: Usando a sintaxe de objeto moderna e o comando correto.
   commandFunction:
     |-
     (config) => ({
       command: 'python',
-      args: ['-m', 'enhanced_mcp_server.main'],
+      # O -m smithery.server executa o servidor definido em pyproject.toml
+      args: ['-m', 'smithery.server'], 
       env: {
-        JINA_API_KEY: config.jinaApiKey,
-        DEEPL_API_KEY: config.deeplApiKey || '',
-        REDIS_URL: config.redisUrl || '',
-        LOG_LEVEL: 'INFO',
-        PORT: config.port.toString(), // Smithery injeta a porta aqui
-        PYTHONUNBUFFERED: '1',
-        PYTHONIOENCODING: 'utf-8'
+        PORT: config.port.toString(),
       }
     })
-
-testConfig:
-  jinaApiKey: "test_key_placeholder"
