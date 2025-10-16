@@ -1,5 +1,4 @@
-# smithery.yaml (versão de teste MÍNIMA)
-
+# smithery.yaml (versão mais simples)
 name: test-mcp-server
 
 startCommand:
@@ -8,8 +7,7 @@ startCommand:
     |-
     (config) => ({
       command: 'python',
-      # O -m smithery.server executa o servidor definido em pyproject.toml
-      args: ['-m', 'smithery.server'], 
+      args: ['-c', 'print("Servidor iniciado"); import time; time.sleep(30)'],
       env: {
         PORT: config.port.toString(),
       }
