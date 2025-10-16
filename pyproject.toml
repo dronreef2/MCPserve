@@ -34,6 +34,10 @@ dev = [
 dev = "smithery.cli.dev:main"
 playground = "smithery.cli.playground:main"
 
+# Points to your server function
+[tool.smithery]
+server = "enhanced_mcp_server.core.server:create_server"
+
 [tool.setuptools.packages.find]
 include = ["enhanced_mcp_server*"]
 
