@@ -1,14 +1,2 @@
-# smithery.yaml (servidor MCP HTTP restaurado)
+# smithery.yaml (usando pyproject.toml [tool.smithery] para HTTP)
 name: enhanced-mcp-server
-
-startCommand:
-  type: http
-  commandFunction:
-    |-
-    (config) => ({
-      command: 'python',
-      args: ['-m', 'enhanced_mcp_server.core.server'],
-      env: {
-        PORT: config.port.toString(),
-      }
-    })
