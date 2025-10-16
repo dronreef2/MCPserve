@@ -1,5 +1,5 @@
-# smithery.yaml (ultra-minimal HTTP server test)
-name: test-mcp-server
+# smithery.yaml (servidor MCP HTTP restaurado)
+name: enhanced-mcp-server
 
 startCommand:
   type: http
@@ -7,7 +7,7 @@ startCommand:
     |-
     (config) => ({
       command: 'python',
-      args: ['-m', 'http.server', config.port.toString()],
+      args: ['-m', 'enhanced_mcp_server.core.server'],
       env: {
         PORT: config.port.toString(),
       }
