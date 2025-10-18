@@ -21,10 +21,8 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          # Install main project dependencies if any (without dev dependencies to avoid conflicts)
-          pip install -e . || echo "No main project dependencies"
-          # Install enhanced-mcp-server package in editable mode
-          cd enhanced-mcp-server && pip install -e .[dev]
+          # Install enhanced-mcp-server package in editable mode with dev dependencies
+          pip install -e .[dev]
 
       - name: Lint (ruff)
         run: |
@@ -34,12 +32,12 @@ jobs:
         env:
           JINA_API_KEY: dummy_jina_key_12345
         run: |
-          cd enhanced-mcp-server && pytest
+          pytest
 
       - name: Build package
         run: |
-          cd enhanced-mcp-server && python -m build || echo 'Build optional'
+          python -m build || echo 'Build optional'
 
       - name: Validate smithery.yaml exists
         run: |
-          test -f enhanced-mcp-server/smithery.yaml
+          test -f smithery.yaml
