@@ -2,47 +2,23 @@
         run: |
           set -e
           pip install --upgrade pip
-          pip install -e . || echo "No main project dependencies"
-          # Detecta pasta com underline ou hífen
-          if [ -d "enhanced_mcp_server" ]; then
-            pip install -e ./enhanced_mcp_server[dev] || pip install -e ./enhanced_mcp_server || true
-          elif [ -d "enhanced-mcp-server" ]; then
-            pip install -e ./enhanced-mcp-server[dev] || pip install -e ./enhanced-mcp-server || true
-          else
-            echo "No local package directory found; continuing"
-          fi
+          # Install enhanced-mcp-server package in editable mode with dev dependencies
+          pip install -e .[dev]
+
+      - name: Lint (ruff)
+        run: |
+          ruff check . || (echo 'Run ruff --fix locally to address issues' && exit 1)
 
       - name: Run tests
         env:
           JINA_API_KEY: dummy_jina_key_12345
         run: |
-          set -e
-          if [ -d "enhanced_mcp_server" ]; then
-            cd enhanced_mcp_server
-            pytest
-          elif [ -d "enhanced-mcp-server" ]; then
-            cd enhanced-mcp-server
-            pytest
-          else
-            echo "No local package directory found; running pytest in repository root"
-            pytest || echo "No tests found or pytest failed"
-          fi
+          pytest
 
       - name: Build package
         run: |
-          if [ -d "enhanced_mcp_server" ]; then
-            cd enhanced_mcp_server && python -m build || echo 'Build optional'
-          elif [ -d "enhanced-mcp-server" ]; then
-            cd enhanced-mcp-server && python -m build || echo 'Build optional'
-          else
-            echo "No package directory for build; skipping"
-          fi
+          python -m build || echo 'Build optional'
 
       - name: Validate smithery.yaml exists
         run: |
-          if [ -f enhanced_mcp_server/smithery.yaml ] || [ -f enhanced-mcp-server/smithery.yaml ]; then
-            echo "smithery.yaml found"
-          else
-            echo "smithery.yaml not found in either enhanced_mcp_server/ or enhanced-mcp-server/"
-            exit 1
-          fi
+          test -f smithery.yaml
