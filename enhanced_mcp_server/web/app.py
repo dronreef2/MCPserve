@@ -25,8 +25,14 @@ app = FastAPI(
 )
 
 # Configura templates e arquivos estáticos
-templates = Jinja2Templates(directory="templates")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+import os
+if os.path.exists("templates"):
+    templates = Jinja2Templates(directory="templates")
+else:
+    templates = None
+    
+if os.path.exists("static"):
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 class FetchRequest(BaseModel):
@@ -46,6 +52,13 @@ class TranslateRequest(BaseModel):
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     """Página inicial."""
+    if templates is None:
+        return HTMLResponse(
+            "<html><body><h1>Enhanced MCP Server</h1>"
+            "<p>Web interface not available. Templates directory not found.</p>"
+            "<p>Use the MCP API endpoints at <code>/mcp</code></p>"
+            "</body></html>"
+        )
     return templates.TemplateResponse("index.html", {
         "request": request,
         "tools": [
@@ -84,6 +97,8 @@ async def home(request: Request):
 @app.get("/fetch", response_class=HTMLResponse)
 async def fetch_page(request: Request):
     """Página de busca de conteúdo."""
+    if templates is None:
+        return HTMLResponse("<html><body><h1>Templates not available</h1></body></html>")
     return templates.TemplateResponse("fetch.html", {"request": request})
 
 
@@ -105,6 +120,8 @@ async def fetch_endpoint(url: str = Form(...)):
 @app.get("/search", response_class=HTMLResponse)
 async def search_page(request: Request):
     """Página de pesquisa web."""
+    if templates is None:
+        return HTMLResponse("<html><body><h1>Templates not available</h1></body></html>")
     return templates.TemplateResponse("search.html", {"request": request})
 
 

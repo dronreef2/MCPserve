@@ -24,5 +24,6 @@ COPY enhanced_mcp_server ./enhanced_mcp_server
 # A Smithery vai mapear uma porta externa para esta
 EXPOSE 8001
 
-# Comando para iniciar o servidor. Use `python -m` para executar o pacote.
-CMD ["python", "-m", "enhanced_mcp_server.main"]
+# Comando para iniciar o servidor HTTP
+# Para Smithery, o servidor é exposto via create_server()
+CMD ["python", "-m", "enhanced_mcp_server.main", "--http"]

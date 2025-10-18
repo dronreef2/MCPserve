@@ -137,23 +137,46 @@ cache = Cache()
 
 
 def cached(ttl: int = None):
-    """Decorador para cache de funções."""
+    """Decorador para cache de funções (suporta sync e async)."""
     def decorator(func: Callable) -> Callable:
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            if not settings.redis_url and not cache._memory_cache:
-                # Se não há cache configurado, executa diretamente
-                return func(*args, **kwargs)
+        import asyncio
+        import inspect
+        
+        is_async = asyncio.iscoroutinefunction(func)
+        
+        if is_async:
+            @wraps(func)
+            async def async_wrapper(*args, **kwargs):
+                if not settings.redis_url and not cache._memory_cache:
+                    # Se não há cache configurado, executa diretamente
+                    return await func(*args, **kwargs)
 
-            cache_key = cache._get_cache_key(func.__name__, args, kwargs)
-            cached_result = cache.get(cache_key)
+                cache_key = cache._get_cache_key(func.__name__, args, kwargs)
+                cached_result = cache.get(cache_key)
 
-            if cached_result is not None:
-                return cached_result
+                if cached_result is not None:
+                    return cached_result
 
-            result = func(*args, **kwargs)
-            cache.set(cache_key, result, ttl)
-            return result
+                result = await func(*args, **kwargs)
+                cache.set(cache_key, result, ttl)
+                return result
+            return async_wrapper
+        else:
+            @wraps(func)
+            def sync_wrapper(*args, **kwargs):
+                if not settings.redis_url and not cache._memory_cache:
+                    # Se não há cache configurado, executa diretamente
+                    return func(*args, **kwargs)
 
-        return wrapper
+                cache_key = cache._get_cache_key(func.__name__, args, kwargs)
+                cached_result = cache.get(cache_key)
+
+                if cached_result is not None:
+                    return cached_result
+
+                result = func(*args, **kwargs)
+                cache.set(cache_key, result, ttl)
+                return result
+            return sync_wrapper
+
     return decorator

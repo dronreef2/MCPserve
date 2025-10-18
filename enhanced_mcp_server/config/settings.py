@@ -2,44 +2,47 @@
 
 from typing import Optional
 from pydantic import Field
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     """Configurações da aplicação."""
 
     # API Keys
-    jina_api_key: Optional[str] = Field(default=None, env="JINA_API_KEY")
-    deepl_api_key: Optional[str] = Field(default=None, env="DEEPL_API_KEY")
+    jina_api_key: Optional[str] = Field(default=None, alias="JINA_API_KEY")
+    deepl_api_key: Optional[str] = Field(default=None, alias="DEEPL_API_KEY")
+    gemini_api_key: Optional[str] = Field(default=None, alias="GEMINI_API_KEY")
 
     # Cache
-    redis_url: Optional[str] = Field(default=None, env="REDIS_URL")
-    cache_ttl: int = Field(default=3600, env="CACHE_TTL")  # 1 hora
+    redis_url: Optional[str] = Field(default=None, alias="REDIS_URL")
+    cache_ttl: int = Field(default=3600, alias="CACHE_TTL")  # 1 hora
 
     # Logging
-    log_level: str = Field(default="INFO", env="LOG_LEVEL")
-    log_format: str = Field(default="json", env="LOG_FORMAT")
+    log_level: str = Field(default="INFO", alias="LOG_LEVEL")
+    log_format: str = Field(default="json", alias="LOG_FORMAT")
 
     # Web Interface
-    web_host: str = Field(default="0.0.0.0", env="WEB_HOST")
-    web_port: int = Field(default=8001, env="WEB_PORT")
-    web_reload: bool = Field(default=False, env="WEB_RELOAD")
+    web_host: str = Field(default="0.0.0.0", alias="WEB_HOST")
+    web_port: int = Field(default=8001, alias="WEB_PORT")
+    web_reload: bool = Field(default=False, alias="WEB_RELOAD")
 
     # Security
-    enable_auth: bool = Field(default=True, env="ENABLE_AUTH")
-    api_key_header: str = Field(default="X-API-Key", env="API_KEY_HEADER")
+    enable_auth: bool = Field(default=True, alias="ENABLE_AUTH")
+    api_key_header: str = Field(default="X-API-Key", alias="API_KEY_HEADER")
 
     # Timeouts
-    request_timeout: int = Field(default=30, env="REQUEST_TIMEOUT")
-    translation_timeout: int = Field(default=60, env="TRANSLATION_TIMEOUT")
+    request_timeout: int = Field(default=30, alias="REQUEST_TIMEOUT")
+    translation_timeout: int = Field(default=60, alias="TRANSLATION_TIMEOUT")
 
     # Rate Limiting
-    rate_limit_requests: int = Field(default=100, env="RATE_LIMIT_REQUESTS")
-    rate_limit_window: int = Field(default=60, env="RATE_LIMIT_WINDOW")  # segundos
+    rate_limit_requests: int = Field(default=100, alias="RATE_LIMIT_REQUESTS")
+    rate_limit_window: int = Field(default=60, alias="RATE_LIMIT_WINDOW")  # segundos
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        case_sensitive=False,
+        populate_by_name=True,
+    )
 
 
 # Instância global das configurações
