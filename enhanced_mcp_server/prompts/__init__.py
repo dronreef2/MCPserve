@@ -1,6 +1,7 @@
-"""Templates de prompt para otimização."""
+# Templates de prompt para otimização.
+# Blocos de documentação foram colocados em strings/variáveis para evitar
+# texto cru no módulo, que causa falhas de lint/pyflakes.
 
-# Template completo para otimização de prompts
 PROMPT_OPTIMIZATION_TEMPLATE = """
 Você é um especialista em engenharia de prompt com mais de 10 anos de experiência. Sua tarefa é otimizar o prompt fornecido seguindo uma estrutura profissional e abrangente.
 
@@ -23,7 +24,6 @@ Você é um especialista em engenharia de prompt com mais de 10 anos de experiê
    - **[Habilidade Específica]**: [Descrição detalhada da habilidade e quando aplicá-la]
 
 2. **[Categoria Secundária]**
-   - **[Habilidade Específica]**: [Descrição detalhada da habilidade e quando aplicá-la]
    - **[Habilidade Específica]**: [Descrição detalhada da habilidade e quando aplicá-la]
 
 ## Rules
@@ -92,7 +92,7 @@ Você é um especialista em criação de prompts eficazes. Otimize o prompt forn
 Otimize o seguinte prompt:
 """
 
-# Template para prompts técnicos
+# Template técnico
 TECHNICAL_PROMPT_TEMPLATE = """
 Como engenheiro de prompt sênior especializado em [domínio técnico], otimize este prompt técnico:
 
