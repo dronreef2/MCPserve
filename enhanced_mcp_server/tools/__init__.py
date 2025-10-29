@@ -1,6 +1,7 @@
-"""Ferramentas MCP para busca e tradução."""
+""""""Ferramentas MCP para busca e tradução.
 
 import re
+from urllib.parse import urlparse
 import httpx
 from enhanced_mcp_server.config import settings
 from enhanced_mcp_server.cache import cached
@@ -27,10 +28,10 @@ def validate_url(url: str) -> bool:
 
         # Bloqueia URLs perigosas
         dangerous_patterns = [
-            r'\b(?:localhost|127\.0\.0\.1|0\.0\.0\.0)\b',
-            r'\b(?:10\.|172\.1[6-9]\.|172\.2[0-9]\.|172\.3[0-1]\.|192\.168\.)\b',
-            r'\.local\b',
-            r'\.internal\b',
+            r'\\b(?:localhost|127\\.0\\.0\\.1|0\\.0\\.0\\.0)\\b',
+            r'\\b(?:10\\.|172\\.1[6-9]\\.|172\\.2[0-9]\\.|172\\.3[0-1]\\.|192\\.168\\.)\\b',
+            r'\\.local\\b',
+            r'\\.internal\\b',
         ]
 
         for pattern in dangerous_patterns:
@@ -137,3 +138,4 @@ async def translate_with_deepl(content: str, source_lang: str, target_lang: str)
     except Exception as e:
         logger.error(f"Erro na tradução com DeepL: {e}")
         raise ValidationError(f"Erro na tradução: {str(e)}")
+"""
