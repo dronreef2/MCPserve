@@ -1,7 +1,6 @@
 """Ferramentas MCP para busca e tradução."""
 
 import re
-from urllib.parse import urlparse
 import httpx
 from enhanced_mcp_server.config import settings
 from enhanced_mcp_server.cache import cached
