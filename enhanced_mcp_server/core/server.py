@@ -44,6 +44,11 @@ async def mcp_endpoint(request: dict):
                             "inputSchema": {
                                 "type": "object",
                                 "properties": {}
+                            },
+                            "annotations": {
+                                "readOnlyHint": True,
+                                "destructiveHint": False,
+                                "idempotentHint": True
                             }
                         }
                     ]
