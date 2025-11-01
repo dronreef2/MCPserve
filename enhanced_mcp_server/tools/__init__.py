@@ -60,7 +60,10 @@ async def fetch_content(url: str, api_key: str | None = None) -> str:
     api_key = api_key or settings.jina_api_key
 
     if not api_key:
-        raise ValidationError("JINA_API_KEY não configurada")
+        return (
+            "JINA_API_KEY não configurada. Informe uma chave válida na configuração da sessão "
+            "para habilitar a captura de conteúdo real."
+        )
 
     if not validate_url(url):
         raise ValidationError(f"URL inválida ou não segura: {url}")
@@ -88,7 +91,10 @@ async def search_web(query: str, api_key: str | None = None) -> str:
     api_key = api_key or settings.jina_api_key
 
     if not api_key:
-        raise ValidationError("JINA_API_KEY não configurada")
+        return (
+            "JINA_API_KEY não configurada. Informe uma chave válida na configuração da sessão "
+            "para habilitar pesquisas reais."
+        )
 
     if not query or len(query.strip()) < 3:
         raise ValidationError("Consulta deve ter pelo menos 3 caracteres")
