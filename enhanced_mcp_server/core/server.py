@@ -1,7 +1,6 @@
 # /enhanced_mcp_server/core/server.py (FastAPI MCP básico)
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-import json
 
 app = FastAPI(title="MCPserve")
 

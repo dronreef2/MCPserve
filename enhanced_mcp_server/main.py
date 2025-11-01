@@ -2,7 +2,6 @@
 """Ponto de entrada principal do Enhanced MCP Server."""
 
 import argparse
-import asyncio
 from enhanced_mcp_server.utils.logging import setup_logging, get_logger
 from enhanced_mcp_server.config import settings
 

@@ -140,7 +140,6 @@ def cached(ttl: int = None):
     """Decorador para cache de funções (suporta sync e async)."""
     def decorator(func: Callable) -> Callable:
         import asyncio
-        import inspect
         
         is_async = asyncio.iscoroutinefunction(func)
         

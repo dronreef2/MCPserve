@@ -1,5 +1,6 @@
 """Aplicação web FastAPI para interface das ferramentas MCP."""
 
+import os
 from typing import Optional
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
@@ -25,7 +26,6 @@ app = FastAPI(
 )
 
 # Configura templates e arquivos estáticos
-import os
 if os.path.exists("templates"):
     templates = Jinja2Templates(directory="templates")
 else:

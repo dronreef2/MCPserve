@@ -1,4 +1,4 @@
-""""""Ferramentas MCP para busca e tradução.
+"""Ferramentas MCP para busca e tradução."""
 
 import re
 from urllib.parse import urlparse
@@ -138,4 +138,3 @@ async def translate_with_deepl(content: str, source_lang: str, target_lang: str)
     except Exception as e:
         logger.error(f"Erro na tradução com DeepL: {e}")
         raise ValidationError(f"Erro na tradução: {str(e)}")
-"""
