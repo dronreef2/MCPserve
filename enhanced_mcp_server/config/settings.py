@@ -9,7 +9,6 @@ class Settings(BaseSettings):
     """Configurações da aplicação."""
 
     # API Keys
-    jina_api_key: Optional[str] = Field(default=None, alias="JINA_API_KEY")
     deepl_api_key: Optional[str] = Field(default=None, alias="DEEPL_API_KEY")
     gemini_api_key: Optional[str] = Field(default=None, alias="GEMINI_API_KEY")
 

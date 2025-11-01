@@ -4,7 +4,6 @@ import re
 from urllib.parse import urlparse
 import httpx
 from enhanced_mcp_server.config import settings
-from enhanced_mcp_server.cache import cached
 from enhanced_mcp_server.utils.logging import get_logger
 
 logger = get_logger(__name__)
@@ -52,72 +51,6 @@ def validate_language_code(code: str) -> bool:
         'RO', 'RU', 'SK', 'SL', 'SV', 'TR', 'UK', 'ZH', 'ZH-HANS', 'ZH-HANT'
     }
     return code.upper() in supported_languages
-
-
-@cached(ttl=1800)  # Cache por 30 minutos
-async def fetch_content(url: str, api_key: str | None = None) -> str:
-    """Busca conteúdo de uma página web usando Jina AI."""
-    api_key = api_key or settings.jina_api_key
-
-    if not api_key:
-        return (
-            "JINA_API_KEY não configurada. Informe uma chave válida na configuração da sessão "
-            "para habilitar a captura de conteúdo real."
-        )
-
-    if not validate_url(url):
-        raise ValidationError(f"URL inválida ou não segura: {url}")
-
-    try:
-        async with httpx.AsyncClient(timeout=settings.request_timeout) as client:
-            response = await client.get(
-                f"https://r.jina.ai/{url}",
-                headers={"Authorization": f"Bearer {api_key}"},
-            )
-            response.raise_for_status()
-            return response.text
-    except httpx.TimeoutException:
-        raise ValidationError("Timeout ao buscar conteúdo")
-    except httpx.HTTPStatusError as e:
-        raise ValidationError(f"Erro HTTP {e.response.status_code}: {e.response.text}")
-    except Exception as e:
-        logger.error(f"Erro ao buscar conteúdo de {url}: {e}")
-        raise ValidationError(f"Erro ao buscar conteúdo: {str(e)}")
-
-
-@cached(ttl=900)  # Cache por 15 minutos
-async def search_web(query: str, api_key: str | None = None) -> str:
-    """Pesquisa na web usando Jina AI."""
-    api_key = api_key or settings.jina_api_key
-
-    if not api_key:
-        return (
-            "JINA_API_KEY não configurada. Informe uma chave válida na configuração da sessão "
-            "para habilitar pesquisas reais."
-        )
-
-    if not query or len(query.strip()) < 3:
-        raise ValidationError("Consulta deve ter pelo menos 3 caracteres")
-
-    try:
-        async with httpx.AsyncClient(timeout=settings.request_timeout) as client:
-            response = await client.get(
-                f"https://s.jina.ai/?q={query}",
-                headers={
-                    "Authorization": f"Bearer {api_key}",
-                    "X-Respond-With": "no-content",
-                },
-            )
-            response.raise_for_status()
-            return response.text
-    except httpx.TimeoutException:
-        raise ValidationError("Timeout na pesquisa")
-    except httpx.HTTPStatusError as e:
-        raise ValidationError(f"Erro HTTP {e.response.status_code}: {e.response.text}")
-    except Exception as e:
-        logger.error(f"Erro na pesquisa '{query}': {e}")
-        raise ValidationError(f"Erro na pesquisa: {str(e)}")
-
 
 
 async def translate_with_deepl(content: str, source_lang: str, target_lang: str) -> str:

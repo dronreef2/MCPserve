@@ -10,8 +10,6 @@ Servidor MCP (Model Context Protocol) básico implementado em Python com FastAPI
 
 ### Ferramentas Disponíveis
 - **🏓 ping**: Ferramenta básica que responde "pong" (implementada)
-- **🔍 fetch**: Busca conteúdo completo de páginas web usando Jina AI (planejado)
-- **🌐 search**: Pesquisa inteligente na web usando Jina AI (planejado)
 - **🌍 translate_deepl**: Tradução avançada entre múltiplos idiomas usando DeepL API (planejado)
 
 ### Recursos Avançados
@@ -28,7 +26,7 @@ Servidor MCP (Model Context Protocol) básico implementado em Python com FastAPI
 - Endpoint `/mcp` com suporte aos métodos: `initialize`, `tools/list`, `tools/call`
 - Ferramenta `ping` funcional
 - Deploy automático no Smithery
-- Configuração com API keys (Jina, DeepL)
+- Configuração com API keys (DeepL)
 - Sistema de cache inteligente
 - Containerização com Docker
 
@@ -90,7 +88,6 @@ Configure as variáveis de ambiente no arquivo `.env`:
 
 ```env
 # API Keys (obrigatórias para funcionalidades específicas)
-JINA_API_KEY=jina_your_api_key_here
 DEEPL_API_KEY=your_deepl_api_key_here
 
 # Cache (opcional)
@@ -237,7 +234,7 @@ npm install -g @smithery/cli
 smithery inspect @dronreef2/MCPserve
 
 # Executar servidor localmente para testes
-smithery run @dronreef2/MCPserve --config '{"JINA_API_KEY":"your_key","DEEPL_API_KEY":"your_key"}'
+smithery run @dronreef2/MCPserve --config '{"DEEPL_API_KEY":"your_key"}'
 
 # Abrir playground para testes interativos
 smithery playground --key your_smithery_key
@@ -245,7 +242,6 @@ smithery playground --key your_smithery_key
 
 ### Instruções de Deploy Manual (se necessário)
 1. **Configure Secrets no Smithery**:
-   - `JINA_API_KEY`: Chave da API Jina AI (obrigatória para ferramentas de busca)
    - `DEEPL_API_KEY`: Chave da API DeepL (obrigatória para tradução)
    - `REDIS_URL`: URL do Redis (opcional, usa cache em memória se não definido)
 
@@ -267,7 +263,7 @@ smithery playground --key your_smithery_key
 - [x] pyproject.toml com [tool.smithery] server
 - [x] Dockerfile multi-stage para build otimizado
 - [x] Endpoint /health para probes
-- [x] Secrets configurados (JINA_API_KEY, DEEPL_API_KEY)
+- [x] Secrets configurados (DEEPL_API_KEY)
 - [x] Testes básicos passando
 - [x] Logs estruturados habilitados
 
@@ -280,7 +276,7 @@ smithery dev --port 8001 --key your_dev_key
 smithery build --out dist/server.cjs --transport shttp
 
 # Testar instalação local
-smithery install @dronreef2/MCPserve --client claude --config '{"JINA_API_KEY":"test_key"}'
+smithery install @dronreef2/MCPserve --client claude --config '{"DEEPL_API_KEY":"test_key"}'
 ```
 
 **Nota**: O arquivo `smithery.config.js` está configurado para desenvolvimento local com o Smithery CLI, permitindo hot-reload e testes integrados.

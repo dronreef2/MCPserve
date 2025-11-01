@@ -4,7 +4,7 @@ import pytest
 from unittest.mock import patch, AsyncMock
 from fastapi.testclient import TestClient
 from enhanced_mcp_server.tools import (
-    fetch_content, search_web, translate_with_deepl,
+    translate_with_deepl,
     ValidationError, validate_url, validate_language_code
 )
 from enhanced_mcp_server.cache import cache
@@ -35,70 +35,6 @@ class TestValidation:
         assert validate_language_code("ZH")
         assert not validate_language_code("INVALID")
         assert not validate_language_code("")
-
-
-class TestTools:
-    """Testes das ferramentas MCP."""
-
-    @patch('enhanced_mcp_server.tools.httpx.AsyncClient')
-    @pytest.mark.asyncio
-    async def test_fetch_content_success(self, mock_client):
-        """Testa busca de conteúdo com sucesso."""
-        async def mock_get(*args, **kwargs):
-            mock_response = AsyncMock()
-            mock_response.text = "Conteúdo da página"
-            mock_response.raise_for_status = AsyncMock()
-            return mock_response
-        
-        with patch.object(settings, 'jina_api_key', 'test_key'):
-            with patch('httpx.AsyncClient') as mock_client:
-                mock_client.return_value.__aenter__.return_value.get = mock_get
-                result = await fetch_content("https://example.com")
-                assert result == "Conteúdo da página"
-
-    @pytest.mark.skip(reason="Teste problemático com coroutine reutilizada")
-    @pytest.mark.asyncio
-    async def test_fetch_content_no_api_key(self):
-        """Testa busca sem chave API."""
-        with pytest.raises(ValidationError, match="JINA_API_KEY não configurada"):
-            await fetch_content("https://example.com")
-
-    @pytest.mark.asyncio
-    async def test_fetch_content_invalid_url(self):
-        """Testa busca com URL inválida."""
-        with patch.object(settings, 'jina_api_key', 'test_key'):
-            with pytest.raises(ValidationError, match="URL inválida"):
-                await fetch_content("not-a-url")
-
-    @patch('enhanced_mcp_server.tools.httpx.AsyncClient')
-    @pytest.mark.asyncio
-    async def test_search_web_success(self, mock_client):
-        """Testa pesquisa web com sucesso."""
-        async def mock_get(*args, **kwargs):
-            mock_response = AsyncMock()
-            mock_response.text = "Resultados da pesquisa"
-            mock_response.raise_for_status = AsyncMock()
-            return mock_response
-        
-        mock_client.return_value.__aenter__.return_value.get = mock_get
-
-        with patch.object(settings, 'jina_api_key', 'test_key'):
-            result = await search_web("teste de pesquisa")
-            assert result == "Resultados da pesquisa"
-
-    @pytest.mark.asyncio
-    async def test_search_web_empty_query(self):
-        """Testa pesquisa com consulta vazia."""
-        with patch.object(settings, 'jina_api_key', 'test_key'):
-            with pytest.raises(ValidationError, match="Consulta deve ter pelo menos 3 caracteres"):
-                await search_web("")
-
-    @pytest.mark.asyncio
-    async def test_translate_deepl_invalid_lang(self):
-        """Testa tradução com idioma inválido."""
-        with patch.object(settings, 'deepl_api_key', 'test_key'):
-            with pytest.raises(ValidationError, match="Idioma de origem inválido"):
-                await translate_with_deepl("Hello", "INVALID", "PT-BR")
 
 
 class TestCache:

@@ -9,7 +9,7 @@ from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from enhanced_mcp_server.config import settings
 from enhanced_mcp_server.tools import (
-    fetch_content, search_web, ValidationError
+    ValidationError
 )
 from enhanced_mcp_server.utils.logging import setup_logging, get_logger
 from enhanced_mcp_server.cache import cache
@@ -104,17 +104,8 @@ async def fetch_page(request: Request):
 
 @app.post("/fetch")
 async def fetch_endpoint(url: str = Form(...)):
-    """Endpoint para busca de conteúdo."""
-    try:
-        logger.info("Requisição de busca de conteúdo", url=url)
-        result = await fetch_content(url)
-        return {"success": True, "result": result}
-    except ValidationError as e:
-        logger.warning("Erro de validação na busca web", url=url, error=str(e))
-        return {"success": False, "result": f"Erro de validação: {str(e)}"}
-    except Exception as e:
-        logger.error("Erro interno na busca web", url=url, error=str(e), exc_info=True)
-        return {"success": False, "result": f"Erro interno: {str(e)}"}
+    """Endpoint para busca de conteúdo (desabilitado)."""
+    return {"success": False, "result": "Funcionalidade de busca desabilitada temporariamente."}
 
 
 @app.get("/search", response_class=HTMLResponse)
@@ -127,17 +118,8 @@ async def search_page(request: Request):
 
 @app.post("/search")
 async def search_endpoint(query: str = Form(...)):
-    """Endpoint para pesquisa web."""
-    try:
-        logger.info("Requisição de pesquisa web", query=query)
-        result = await search_web(query)
-        return {"success": True, "result": result}
-    except ValidationError as e:
-        logger.warning("Erro de validação na pesquisa", query=query, error=str(e))
-        return {"success": False, "result": f"Erro de validação: {str(e)}"}
-    except Exception as e:
-        logger.error("Erro interno na pesquisa", query=query, error=str(e), exc_info=True)
-        return {"success": False, "result": f"Erro interno: {str(e)}"}
+    """Endpoint para pesquisa web (desabilitado)."""
+    return {"success": False, "result": "Funcionalidade de pesquisa desabilitada temporariamente."}
 
 
 @app.get("/health")
@@ -147,7 +129,6 @@ async def health_check():
         "status": "healthy",
         "version": "0.2.0",
         "services": {
-            "jina": bool(settings.jina_api_key),
             "gemini": bool(settings.gemini_api_key),
             "deepl": bool(settings.deepl_api_key),
             "redis": bool(settings.redis_url)

@@ -44,47 +44,6 @@ class TestWebInterface:
         assert response.status_code == 200
         assert "Pesquisar na Web" in response.text
 
-    @patch('enhanced_mcp_server.web.app.fetch_content')
-    def test_fetch_endpoint_success(self, mock_fetch, client):
-        """Testa endpoint de busca com sucesso."""
-        async def mock_fetch_func(url):
-            return "Conteúdo extraído"
-        
-        mock_fetch.side_effect = mock_fetch_func
-
-        with patch.object(settings, 'jina_api_key', 'test_key'):
-            response = client.post("/fetch", data={"url": "https://example.com"})
-            assert response.status_code == 200
-            data = response.json()
-            assert data["success"] is True
-            assert "Conteúdo extraído" in data["result"]
-
-    @patch('enhanced_mcp_server.web.app.fetch_content')
-    def test_fetch_endpoint_validation_error(self, mock_fetch, client):
-        """Testa endpoint de busca com erro de validação."""
-        mock_fetch.side_effect = Exception("Erro de validação")
-
-        response = client.post("/fetch", data={"url": "https://example.com"})
-        assert response.status_code == 200
-        data = response.json()
-        assert data["success"] is False
-        assert "Erro interno" in data["result"]
-
-    @patch('enhanced_mcp_server.web.app.search_web')
-    def test_search_endpoint_success(self, mock_search, client):
-        """Testa endpoint de pesquisa com sucesso."""
-        async def mock_search_func(query):
-            return "Resultados da pesquisa"
-        
-        mock_search.side_effect = mock_search_func
-
-        with patch.object(settings, 'jina_api_key', 'test_key'):
-            response = client.post("/search", data={"query": "teste de pesquisa"})
-            assert response.status_code == 200
-            data = response.json()
-            assert data["success"] is True
-            assert "Resultados da pesquisa" in data["result"]
-
     def test_fetch_endpoint_missing_url(self, client):
         """Testa endpoint de busca sem URL."""
         response = client.post("/fetch", data={})
@@ -115,7 +74,6 @@ class TestMCPServer:
 class TestIntegration:
     """Testes de integração completos."""
 
-    @pytest.mark.integration
     def test_full_web_flow(self, client):
         """Testa fluxo completo da interface web."""
         # Página inicial
@@ -134,24 +92,3 @@ class TestIntegration:
         response = client.get("/health")
         assert response.status_code == 200
 
-    @pytest.mark.integration
-    @patch('enhanced_mcp_server.web.app.fetch_content')
-    def test_fetch_integration(self, mock_fetch, client):
-        """Testa integração completa de busca."""
-        async def mock_fetch_func(url):
-            return "<html>Test content</html>"
-        
-        mock_fetch.side_effect = mock_fetch_func
-
-        with patch.object(settings, 'jina_api_key', 'test_key'):
-            # Acessa página
-            response = client.get("/fetch")
-            assert response.status_code == 200
-
-            # Faz busca
-            response = client.post("/fetch", data={"url": "https://example.com"})
-            assert response.status_code == 200
-
-            data = response.json()
-            assert data["success"] is True
-            assert "Test content" in data["result"]
