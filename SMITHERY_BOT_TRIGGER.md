@@ -23,3 +23,4 @@
 
 Please process this project for deployment on Smithery.ai
 
+Trigger Smithery bot deployment
