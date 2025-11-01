@@ -102,8 +102,21 @@ async def health() -> dict:
 
 @app.get("/.well-known/mcp-config")
 async def well_known_mcp_config() -> dict:
-    """Retorna o schema JSON de configuração de sessão."""
-    return SESSION_CONFIG_SCHEMA
+    """Retorna metadados MCP para auto-descoberta e configuração."""
+    return {
+        "mcpServers": {
+            "default": {
+                "transport": {
+                    "type": "http",
+                    "endpoint": f"{prefix_from_env}/mcp" if prefix_from_env else "/mcp"
+                },
+                "authentication": {
+                    "type": "none"
+                }
+            }
+        },
+        "sessionConfigSchema": SESSION_CONFIG_SCHEMA
+    }
 
 
 @app.post("/mcp")
