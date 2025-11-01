@@ -1,5 +1,5 @@
 # smithery.yaml - Configuração mínima para MCP server
-name: MCPserve
+name: "@dronreef2/mcpserve"
 runtime: python
 server: enhanced_mcp_server.core.server:create_server
 

@@ -1,5 +1,5 @@
 {
-  "name": "mcpserve",
+  "name": "@dronreef2/mcpserve",
   "version": "0.2.0",
   "description": "Servidor MCP avançado com ferramentas de IA, cache inteligente e interface web",
   "license": "MIT",
