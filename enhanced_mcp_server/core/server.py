@@ -1,5 +1,5 @@
 # /enhanced_mcp_server/core/server.py (FastAPI MCP básico)
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 from enhanced_mcp_server.tools import fetch_content, search_web, translate_with_deepl
 
@@ -10,6 +10,24 @@ app = FastAPI(title="MCPserve")
 async def health() -> dict:
     """Endpoint simples para healthchecks (útil para Smithery e probes)."""
     return {"status": "ok"}
+
+@app.get("/.well-known/mcp-config")
+async def well_known_mcp_config() -> dict:
+    """Configuração padrão para clientes MCP."""
+    return {
+        "mcpServers": {
+            "default": {
+                "transport": {
+                    "type": "http",
+                    "endpoint": "/mcp"
+                },
+                "authentication": {
+                    "type": "none"
+                }
+            }
+        }
+    }
+
 
 @app.post("/mcp")
 async def mcp_endpoint(request: dict):
@@ -113,11 +131,9 @@ async def mcp_endpoint(request: dict):
             elif tool_name == "fetch":
                 url = tool_args.get("url")
                 if not url:
-                    return JSONResponse(status_code=400, content={"error": "URL parameter required"})
+                    raise HTTPException(status_code=400, detail="URL parameter required")
                 try:
-                    # Note: This would be async in a real implementation
-                    import asyncio
-                    result = asyncio.run(fetch_content(url))
+                    result = await fetch_content(url)
                     return {
                         "jsonrpc": "2.0",
                         "id": request.get("id"),
@@ -131,15 +147,13 @@ async def mcp_endpoint(request: dict):
                         }
                     }
                 except Exception as e:
-                    return JSONResponse(status_code=500, content={"error": f"Fetch failed: {str(e)}"})
+                    raise HTTPException(status_code=500, detail=f"Fetch failed: {str(e)}")
             elif tool_name == "search":
                 query = tool_args.get("query")
                 if not query:
-                    return JSONResponse(status_code=400, content={"error": "Query parameter required"})
+                    raise HTTPException(status_code=400, detail="Query parameter required")
                 try:
-                    # Note: This would be async in a real implementation
-                    import asyncio
-                    result = asyncio.run(search_web(query))
+                    result = await search_web(query)
                     return {
                         "jsonrpc": "2.0",
                         "id": request.get("id"),
@@ -153,10 +167,12 @@ async def mcp_endpoint(request: dict):
                         }
                     }
                 except Exception as e:
-                    return JSONResponse(status_code=500, content={"error": f"Search failed: {str(e)}"})
-        return JSONResponse(status_code=400, content={"error": "Method not supported"})
+                    raise HTTPException(status_code=500, detail=f"Search failed: {str(e)}")
+        raise HTTPException(status_code=400, detail="Method not supported")
+    except HTTPException:
+        raise
     except Exception as e:
-        return JSONResponse(status_code=500, content={"error": str(e)})
+        raise HTTPException(status_code=500, detail=str(e))
 
 def create_server():
     """Retorna o app FastAPI para Smithery."""
