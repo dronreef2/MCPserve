@@ -15,11 +15,16 @@ logger = get_logger(__name__)
 
 class SmitheryPrefixMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
-        prefix = request.headers.get("x-smithery-prefix")
+        prefix = request.headers.get("x-smithery-prefix") or prefix_from_env
         if prefix:
             cleaned = prefix.rstrip("/")
-            if cleaned and request.scope.get("root_path") != cleaned:
-                request.scope["root_path"] = cleaned
+            scope = request.scope
+            if cleaned:
+                scope["root_path"] = cleaned
+                path: str = scope.get("path", "")
+                if path.startswith(cleaned):
+                    trimmed = path[len(cleaned):] or "/"
+                    scope["path"] = trimmed
         return await call_next(request)
 
 
