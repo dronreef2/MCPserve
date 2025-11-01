@@ -1,12 +1,29 @@
 # /enhanced_mcp_server/core/server.py (FastAPI MCP básico)
+import os
 from typing import Mapping
 
 from fastapi import FastAPI, HTTPException, Request
+from starlette.middleware.base import BaseHTTPMiddleware
 from enhanced_mcp_server.tools import fetch_content, search_web, translate_with_deepl
 from enhanced_mcp_server.utils.logging import get_logger
 
-app = FastAPI(title="MCPserve")
+prefix_from_env = os.environ.get("SMITHERY_PREFIX", "").rstrip("/")
+
+app = FastAPI(title="MCPserve", root_path=prefix_from_env)
 logger = get_logger(__name__)
+
+
+class SmitheryPrefixMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        prefix = request.headers.get("x-smithery-prefix")
+        if prefix:
+            cleaned = prefix.rstrip("/")
+            if cleaned and request.scope.get("root_path") != cleaned:
+                request.scope["root_path"] = cleaned
+        return await call_next(request)
+
+
+app.add_middleware(SmitheryPrefixMiddleware)
 
 
 SESSION_CONFIG_SCHEMA = {
