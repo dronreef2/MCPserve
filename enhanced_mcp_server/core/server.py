@@ -4,7 +4,7 @@ from typing import Mapping
 
 from fastapi import FastAPI, HTTPException, Request
 from starlette.middleware.base import BaseHTTPMiddleware
-from enhanced_mcp_server.tools import fetch_content, search_web, translate_with_deepl
+from enhanced_mcp_server.tools import translate_with_deepl
 from enhanced_mcp_server.utils.logging import get_logger
 
 prefix_from_env = os.environ.get("SMITHERY_PREFIX", "").rstrip("/")
@@ -39,11 +39,6 @@ SESSION_CONFIG_SCHEMA = {
     "x-query-style": "dot",
     "type": "object",
     "properties": {
-        "jinaApiKey": {
-            "type": "string",
-            "title": "Jina API Key",
-            "description": "Chave de API para habilitar as ferramentas de busca Jina AI."
-        },
         "deeplApiKey": {
             "type": "string",
             "title": "DeepL API Key",
@@ -81,8 +76,6 @@ def _parse_session_config(query_params: Mapping[str, str]) -> dict:
     """Converte parâmetros da query string em configuração de sessão."""
     config: dict[str, object] = {}
 
-    if "jinaApiKey" in query_params:
-        config["jina_api_key"] = query_params["jinaApiKey"]
     if "deeplApiKey" in query_params:
         config["deepl_api_key"] = query_params["deeplApiKey"]
     if "redisUrl" in query_params:
@@ -126,7 +119,6 @@ async def mcp_endpoint(request: Request):
         payload = await request.json()
         method = payload.get("method")
         session_config = _parse_session_config(request.query_params)
-        jina_api_key = session_config.get("jina_api_key")
         logger.debug("MCP request recebido", method=method)
 
         if method == "initialize":
@@ -165,44 +157,6 @@ async def mcp_endpoint(request: Request):
                                 "destructiveHint": False,
                                 "idempotentHint": True
                             }
-                        },
-                        {
-                            "name": "fetch",
-                            "description": "Busca conteúdo completo de uma página web usando Jina AI.",
-                            "inputSchema": {
-                                "type": "object",
-                                "properties": {
-                                    "url": {
-                                        "type": "string",
-                                        "description": "URL da página web a ser buscada"
-                                    }
-                                },
-                                "required": ["url"]
-                            },
-                            "annotations": {
-                                "readOnlyHint": True,
-                                "destructiveHint": False,
-                                "idempotentHint": True
-                            }
-                        },
-                        {
-                            "name": "search",
-                            "description": "Pesquisa na web usando Jina AI e retorna resultados estruturados.",
-                            "inputSchema": {
-                                "type": "object",
-                                "properties": {
-                                    "query": {
-                                        "type": "string",
-                                        "description": "Termo de pesquisa"
-                                    }
-                                },
-                                "required": ["query"]
-                            },
-                            "annotations": {
-                                "readOnlyHint": True,
-                                "destructiveHint": False,
-                                "idempotentHint": True
-                            }
                         }
                     ]
                 }
@@ -225,46 +179,6 @@ async def mcp_endpoint(request: Request):
                         ]
                     }
                 }
-            elif tool_name == "fetch":
-                url = tool_args.get("url")
-                if not url:
-                    raise HTTPException(status_code=400, detail="URL parameter required")
-                try:
-                    result = await fetch_content(url, api_key=jina_api_key)
-                    return {
-                        "jsonrpc": "2.0",
-                        "id": payload.get("id"),
-                        "result": {
-                            "content": [
-                                {
-                                    "type": "text",
-                                    "text": result
-                                }
-                            ]
-                        }
-                    }
-                except Exception as e:
-                    raise HTTPException(status_code=500, detail=f"Fetch failed: {str(e)}")
-            elif tool_name == "search":
-                query = tool_args.get("query")
-                if not query:
-                    raise HTTPException(status_code=400, detail="Query parameter required")
-                try:
-                    result = await search_web(query, api_key=jina_api_key)
-                    return {
-                        "jsonrpc": "2.0",
-                        "id": payload.get("id"),
-                        "result": {
-                            "content": [
-                                {
-                                    "type": "text",
-                                    "text": result
-                                }
-                            ]
-                        }
-                    }
-                except Exception as e:
-                    raise HTTPException(status_code=500, detail=f"Search failed: {str(e)}")
         elif method in {"ping", "heartbeat/ping"}:
             return {
                 "jsonrpc": "2.0",
