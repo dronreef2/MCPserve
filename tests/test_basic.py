@@ -2,12 +2,14 @@
 
 import pytest
 from unittest.mock import patch, AsyncMock
+from fastapi.testclient import TestClient
 from enhanced_mcp_server.tools import (
     fetch_content, search_web, translate_with_deepl,
     ValidationError, validate_url, validate_language_code
 )
 from enhanced_mcp_server.cache import cache
 from enhanced_mcp_server.config import settings
+from enhanced_mcp_server.core.server import app
 
 
 class TestValidation:
@@ -143,3 +145,20 @@ class TestConfig:
             test_settings = Settings()
             assert test_settings.web_port == 9000
             assert test_settings.log_level == "DEBUG"
+
+
+class TestServer:
+    """Testes do servidor FastAPI."""
+
+    def test_health_endpoint(self):
+        """Testa endpoint de health check."""
+        client = TestClient(app)
+        response = client.get("/health")
+        assert response.status_code == 200
+        assert response.json() == {"status": "ok"}
+
+    def test_create_server_factory(self):
+        """Testa função factory create_server."""
+        from enhanced_mcp_server.core.server import create_server
+        server_app = create_server()
+        assert server_app is app  # Deve retornar a mesma instância

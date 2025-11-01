@@ -1,3 +1,28 @@
 # smithery.yaml (HTTP server com runtime python)
 name: MCPserve
 runtime: python
+
+# Smithery server entrypoint (falls back to pyproject tool.smithery if omitted)
+server: enhanced_mcp_server.core.server:create_server
+
+# Usar o Dockerfile para construir a imagem (opcional — Smithery pode usar PEP517 build)
+build:
+  type: dockerfile
+  dockerfile: Dockerfile
+
+# Variáveis e secrets esperados em produção
+env:
+  WEB_PORT: 8001
+
+secrets:
+  - name: JINA_API_KEY
+  - name: DEEPL_API_KEY
+  - name: REDIS_URL
+
+# Recursos e portas (ajuste conforme seu plano Smithery)
+resources:
+  memory: 512Mi
+
+ports:
+  - container: 8001
+    protocol: tcp

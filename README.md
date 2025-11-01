@@ -225,18 +225,65 @@ user = auth_manager.validate_api_key(api_key)
 
 ## 🌐 Publicação / Smithery
 
+### Deploy Automático
+O projeto é automaticamente implantado no Smithery a partir de pushes na branch `main`. O deploy usa o `smithery.yaml` e a função factory `enhanced_mcp_server.core.server:create_server`.
+
 ### Verificação Local
 ```bash
-smithery dev --key <dev-key>
+# Instalar Smithery CLI
+npm install -g @smithery/cli
+
+# Verificar configuração local
+smithery inspect @dronreef2/MCPserve
+
+# Executar servidor localmente para testes
+smithery run @dronreef2/MCPserve --config '{"JINA_API_KEY":"your_key","DEEPL_API_KEY":"your_key"}'
+
+# Abrir playground para testes interativos
+smithery playground --key your_smithery_key
 ```
 
+### Instruções de Deploy Manual (se necessário)
+1. **Configure Secrets no Smithery**:
+   - `JINA_API_KEY`: Chave da API Jina AI (obrigatória para ferramentas de busca)
+   - `DEEPL_API_KEY`: Chave da API DeepL (obrigatória para tradução)
+   - `REDIS_URL`: URL do Redis (opcional, usa cache em memória se não definido)
+
+2. **Configure Environment Variables**:
+   - `WEB_PORT`: Porta do servidor (padrão: 8001)
+   - `LOG_LEVEL`: Nível de logging (INFO, DEBUG, etc.)
+
+3. **Health Checks**:
+   - Configure liveness probe: `GET /health`
+   - Configure readiness probe: `GET /health`
+
+4. **Recursos**:
+   - Memória recomendada: 512Mi
+   - CPU: 0.5 vCPU
+   - Porta exposta: 8001 (TCP)
+
 ### Checklist para Publicação
-- [x] Testes passando
-- [x] smithery.yaml configurado
-- [x] pyproject.toml com metadados
-- [x] Documentação completa
-- [x] Logs estruturados
-- [x] Segurança implementada
+- [x] smithery.yaml configurado com server factory
+- [x] pyproject.toml com [tool.smithery] server
+- [x] Dockerfile multi-stage para build otimizado
+- [x] Endpoint /health para probes
+- [x] Secrets configurados (JINA_API_KEY, DEEPL_API_KEY)
+- [x] Testes básicos passando
+- [x] Logs estruturados habilitados
+
+### Desenvolvimento com Smithery CLI
+```bash
+# Iniciar servidor de desenvolvimento com hot-reload (usa smithery.config.js)
+smithery dev --port 8001 --key your_dev_key
+
+# Construir para produção
+smithery build --out dist/server.cjs --transport shttp
+
+# Testar instalação local
+smithery install @dronreef2/MCPserve --client claude --config '{"JINA_API_KEY":"test_key"}'
+```
+
+**Nota**: O arquivo `smithery.config.js` está configurado para desenvolvimento local com o Smithery CLI, permitindo hot-reload e testes integrados.
 
 ## 🧪 Teste das Ferramentas
 

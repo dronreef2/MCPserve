@@ -5,6 +5,12 @@ import json
 
 app = FastAPI(title="MCPserve")
 
+
+@app.get("/health")
+async def health() -> dict:
+    """Endpoint simples para healthchecks (útil para Smithery e probes)."""
+    return {"status": "ok"}
+
 @app.post("/mcp")
 async def mcp_endpoint(request: dict):
     """Endpoint MCP HTTP básico."""
