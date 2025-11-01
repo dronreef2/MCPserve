@@ -1,5 +1,5 @@
 {
-  "name": "enhanced-mcp-server",
+  "name": "mcpserve",
   "version": "0.2.0",
   "description": "Servidor MCP avançado com ferramentas de IA, cache inteligente e interface web",
   "license": "MIT",
@@ -8,5 +8,9 @@
     "url": "https://github.com/dronreef2/MCPserve"
   },
   "keywords": ["mcp", "ai", "server", "model-context-protocol"],
-  "author": "Enhanced MCP Team"
+  "author": "Enhanced MCP Team",
+  "main": "enhanced_mcp_server/core/server.py",
+  "scripts": {
+    "start": "python -m enhanced_mcp_server.main"
+  }
 }
