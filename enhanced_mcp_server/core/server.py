@@ -3,8 +3,10 @@ from typing import Mapping
 
 from fastapi import FastAPI, HTTPException, Request
 from enhanced_mcp_server.tools import fetch_content, search_web, translate_with_deepl
+from enhanced_mcp_server.utils.logging import get_logger
 
 app = FastAPI(title="MCPserve")
+logger = get_logger(__name__)
 
 
 SESSION_CONFIG_SCHEMA = {
@@ -90,6 +92,7 @@ async def mcp_endpoint(request: Request):
         method = payload.get("method")
         session_config = _parse_session_config(request.query_params)
         jina_api_key = session_config.get("jina_api_key")
+        logger.debug("MCP request recebido", method=method)
 
         if method == "initialize":
             return {
@@ -227,6 +230,12 @@ async def mcp_endpoint(request: Request):
                     }
                 except Exception as e:
                     raise HTTPException(status_code=500, detail=f"Search failed: {str(e)}")
+        elif method in {"ping", "heartbeat/ping"}:
+            return {
+                "jsonrpc": "2.0",
+                "id": payload.get("id"),
+                "result": {"pong": True}
+            }
         raise HTTPException(status_code=400, detail="Method not supported")
     except HTTPException:
         raise
