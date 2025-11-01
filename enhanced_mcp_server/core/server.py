@@ -1,9 +1,74 @@
 # /enhanced_mcp_server/core/server.py (FastAPI MCP básico)
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import JSONResponse
+from typing import Mapping
+
+from fastapi import FastAPI, HTTPException, Request
 from enhanced_mcp_server.tools import fetch_content, search_web, translate_with_deepl
 
 app = FastAPI(title="MCPserve")
+
+
+SESSION_CONFIG_SCHEMA = {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://server.smithery.ai/@dronreef2/mcpserve/.well-known/mcp-config",
+    "title": "Configuração de Sessão do MCPserve",
+    "description": "Parâmetros opcionais para personalizar o comportamento do MCPserve por sessão.",
+    "x-query-style": "dot",
+    "type": "object",
+    "properties": {
+        "jinaApiKey": {
+            "type": "string",
+            "title": "Jina API Key",
+            "description": "Chave de API para habilitar as ferramentas de busca Jina AI."
+        },
+        "deeplApiKey": {
+            "type": "string",
+            "title": "DeepL API Key",
+            "description": "Chave de API para habilitar a ferramenta de tradução."
+        },
+        "redisUrl": {
+            "type": "string",
+            "title": "Redis URL",
+            "description": "Endpoint Redis para cache compartilhado (opcional)."
+        },
+        "logLevel": {
+            "type": "string",
+            "title": "Log Level",
+            "description": "Nível de log desejado para a sessão.",
+            "default": "INFO",
+            "enum": ["DEBUG", "INFO", "WARNING", "ERROR"]
+        },
+        "enableAuth": {
+            "type": "boolean",
+            "title": "Ativar autenticação",
+            "description": "Indica se endpoints sensíveis exigem autenticação.",
+            "default": False
+        }
+    },
+    "required": [],
+    "additionalProperties": False
+}
+
+
+def _parse_bool(value: str) -> bool:
+    return value.lower() in {"1", "true", "t", "yes", "y"}
+
+
+def _parse_session_config(query_params: Mapping[str, str]) -> dict:
+    """Converte parâmetros da query string em configuração de sessão."""
+    config: dict[str, object] = {}
+
+    if "jinaApiKey" in query_params:
+        config["jina_api_key"] = query_params["jinaApiKey"]
+    if "deeplApiKey" in query_params:
+        config["deepl_api_key"] = query_params["deeplApiKey"]
+    if "redisUrl" in query_params:
+        config["redis_url"] = query_params["redisUrl"]
+    if "logLevel" in query_params:
+        config["log_level"] = query_params["logLevel"]
+    if "enableAuth" in query_params:
+        config["enable_auth"] = _parse_bool(query_params["enableAuth"])
+
+    return config
 
 
 @app.get("/health")
@@ -13,37 +78,30 @@ async def health() -> dict:
 
 @app.get("/.well-known/mcp-config")
 async def well_known_mcp_config() -> dict:
-    """Configuração padrão para clientes MCP."""
-    return {
-        "mcpServers": {
-            "default": {
-                "transport": {
-                    "type": "http",
-                    "endpoint": "/mcp"
-                },
-                "authentication": {
-                    "type": "none"
-                }
-            }
-        }
-    }
+    """Retorna o schema JSON de configuração de sessão."""
+    return SESSION_CONFIG_SCHEMA
 
 
 @app.post("/mcp")
-async def mcp_endpoint(request: dict):
+async def mcp_endpoint(request: Request):
     """Endpoint MCP HTTP básico."""
     try:
-        method = request.get("method")
+        payload = await request.json()
+        method = payload.get("method")
+        session_config = _parse_session_config(request.query_params)
+        jina_api_key = session_config.get("jina_api_key")
+
         if method == "initialize":
             return {
                 "jsonrpc": "2.0",
-                "id": request.get("id"),
+                "id": payload.get("id"),
                 "result": {
                     "protocolVersion": "2025-06-18",
                     "capabilities": {
                         "tools": {
                             "listChanged": True
-                        }
+                        },
+                        "sessionConfigSchema": SESSION_CONFIG_SCHEMA
                     },
                     "serverInfo": {
                         "name": "MCPserve",
@@ -54,7 +112,7 @@ async def mcp_endpoint(request: dict):
         elif method == "tools/list":
             return {
                 "jsonrpc": "2.0",
-                "id": request.get("id"),
+                "id": payload.get("id"),
                 "result": {
                     "tools": [
                         {
@@ -112,13 +170,14 @@ async def mcp_endpoint(request: dict):
                 }
             }
         elif method == "tools/call":
-            tool_name = request.get("params", {}).get("name")
-            tool_args = request.get("params", {}).get("arguments", {})
-            
+            params = payload.get("params", {})
+            tool_name = params.get("name")
+            tool_args = params.get("arguments", {})
+
             if tool_name == "ping":
                 return {
                     "jsonrpc": "2.0",
-                    "id": request.get("id"),
+                    "id": payload.get("id"),
                     "result": {
                         "content": [
                             {
@@ -133,10 +192,10 @@ async def mcp_endpoint(request: dict):
                 if not url:
                     raise HTTPException(status_code=400, detail="URL parameter required")
                 try:
-                    result = await fetch_content(url)
+                    result = await fetch_content(url, api_key=jina_api_key)
                     return {
                         "jsonrpc": "2.0",
-                        "id": request.get("id"),
+                        "id": payload.get("id"),
                         "result": {
                             "content": [
                                 {
@@ -153,10 +212,10 @@ async def mcp_endpoint(request: dict):
                 if not query:
                     raise HTTPException(status_code=400, detail="Query parameter required")
                 try:
-                    result = await search_web(query)
+                    result = await search_web(query, api_key=jina_api_key)
                     return {
                         "jsonrpc": "2.0",
-                        "id": request.get("id"),
+                        "id": payload.get("id"),
                         "result": {
                             "content": [
                                 {

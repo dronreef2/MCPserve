@@ -55,9 +55,11 @@ def validate_language_code(code: str) -> bool:
 
 
 @cached(ttl=1800)  # Cache por 30 minutos
-async def fetch_content(url: str) -> str:
+async def fetch_content(url: str, api_key: str | None = None) -> str:
     """Busca conteúdo de uma página web usando Jina AI."""
-    if not settings.jina_api_key:
+    api_key = api_key or settings.jina_api_key
+
+    if not api_key:
         raise ValidationError("JINA_API_KEY não configurada")
 
     if not validate_url(url):
@@ -67,7 +69,7 @@ async def fetch_content(url: str) -> str:
         async with httpx.AsyncClient(timeout=settings.request_timeout) as client:
             response = await client.get(
                 f"https://r.jina.ai/{url}",
-                headers={"Authorization": f"Bearer {settings.jina_api_key}"},
+                headers={"Authorization": f"Bearer {api_key}"},
             )
             response.raise_for_status()
             return response.text
@@ -81,9 +83,11 @@ async def fetch_content(url: str) -> str:
 
 
 @cached(ttl=900)  # Cache por 15 minutos
-async def search_web(query: str) -> str:
+async def search_web(query: str, api_key: str | None = None) -> str:
     """Pesquisa na web usando Jina AI."""
-    if not settings.jina_api_key:
+    api_key = api_key or settings.jina_api_key
+
+    if not api_key:
         raise ValidationError("JINA_API_KEY não configurada")
 
     if not query or len(query.strip()) < 3:
@@ -94,7 +98,7 @@ async def search_web(query: str) -> str:
             response = await client.get(
                 f"https://s.jina.ai/?q={query}",
                 headers={
-                    "Authorization": f"Bearer {settings.jina_api_key}",
+                    "Authorization": f"Bearer {api_key}",
                     "X-Respond-With": "no-content",
                 },
             )
